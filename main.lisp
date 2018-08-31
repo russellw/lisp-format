@@ -1,5 +1,5 @@
 (defun args ()
-   #+CCL CCL:*UNPROCESSED-COMMAND-LINE-ARGUMENTS*
+   #+CCL *UNPROCESSED-COMMAND-LINE-ARGUMENTS*
    #+SBCL (cdr *posix-argv*))
 
 (load "read")
