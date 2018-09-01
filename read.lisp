@@ -4,7 +4,9 @@
 (defun comment-reader (st c)
   (declare (ignore c))
   (list +comment+
-                     (read-line st nil #\Newline t)))
+    (concatenate 'string
+                     (string c)
+                     (read-line st nil #\Newline t))))
 
 (defun feature-test-reader (st c x)
    (declare (ignore c x))

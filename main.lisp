@@ -5,5 +5,5 @@
 (load "read")
 
 (let ((s (read-file (car (args)))))
-  (mapcar #'pprint s))
+  (mapc #'pprint s))
 (quit)
