@@ -1,8 +1,4 @@
-(defconstant +comment+ (gensym))
-(defconstant +feature-test+ (gensym))
-
 (defun comment-reader (st c)
-  (declare (ignore c))
   (list +comment+
     (concatenate 'string
                      (string c)
