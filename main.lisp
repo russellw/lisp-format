@@ -1,9 +1,11 @@
-(defun args ()
+(load "read")
+(load "write")
+
+(defconstant +args+
    #+CCL *UNPROCESSED-COMMAND-LINE-ARGUMENTS*
    #+SBCL (cdr *posix-argv*))
 
-(load "read")
-
-(let ((s (read-file (car (args)))))
-  (mapc #'pprint s))
+(dolist (file +args+)
+  (let ((s (read-file file)))
+    (write-file file s)))
 (quit)
