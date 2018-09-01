@@ -1,14 +1,14 @@
-(defconstant comment (gensym))
-(defconstant feature-test (gensym))
+(defconstant +comment+ (gensym))
+(defconstant +feature-test+ (gensym))
 
 (defun comment-reader (st c)
   (declare (ignore c))
-  (list comment
+  (list +comment+
                      (read-line st nil #\Newline t)))
 
 (defun feature-test-reader (st c x)
    (declare (ignore c x))
-   (list feature-test
+   (list +feature-test+
     (read st t nil t)
     (read st t nil t)))
 

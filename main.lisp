@@ -4,5 +4,6 @@
 
 (load "read")
 
-(format t "~A~%" (read-file (car (args))))
+(let ((s (read-file (car (args)))))
+  (mapcar #'pprint s))
 (quit)
