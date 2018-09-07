@@ -9,8 +9,10 @@
 
 (defun pp-position()
   (unless(= *newlines* 0)
+  (unless(= (file-position *standard-output*) 0)
   (dotimes (i *newlines*)
     (terpri))
+    )
   (dotimes (i *indent*)
     (write-char #\space))
   (setf *newlines* 0)
@@ -67,5 +69,10 @@
   (funcall(writer a)a))
 
 (defun write-file (file s)
+  (with-open-file (*standard-output* file
+    :direction :output
+    :if-exists :supersede)
   (let((*print-case* :downcase))
-  (mapc #'pp s)))
+  (mapc #'pp s)
+  (terpri)
+  )))
