@@ -33,7 +33,7 @@
   (princ s))
 
 (defun pp-line-comment(a)
-      (next-line)
+      (blank-line)
       (pp-string (cadr a))
       (next-line))
 
@@ -63,7 +63,7 @@
     ((member (car a)'(defun))
       #'pp-defun)
     (t
-      (write a))))
+      #'pp-write)))
 
 (defun pp(a)
   (funcall(writer a)a))
@@ -73,6 +73,9 @@
     :direction :output
     :if-exists :supersede)
   (let((*print-case* :downcase))
-  (mapc #'pp s)
+        (loop
+          while s do
+          (next-line)
+          (pp(pop s)))
   (terpri)
   )))
