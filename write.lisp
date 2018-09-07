@@ -72,6 +72,10 @@
   (pp-string"#'")
   (pp(cadr a))
   )
+    ((eq (car a) 'quote)
+  (pp-string"'")
+  (pp(cadr a))
+  )
 
   ;special forms
     ((eq  (car a) 'defun)
