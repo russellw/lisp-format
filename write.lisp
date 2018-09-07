@@ -94,6 +94,11 @@
         (pp-string ")"))
         )
 
+        ;0 special args
+    ((member  (car a) '(ignore-errors))
+  (pp-special a 0)
+        )
+
         ;1 special arg
     ((member  (car a) '(dolist dotimes))
   (pp-special a 1)
