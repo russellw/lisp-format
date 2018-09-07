@@ -20,17 +20,30 @@
   )
 
 (defun pp-write(a)
-  (pp-position)
-  (write a))
-
-(defun pp-list(s)
-  (if s
-    (pp-write s)
-    (pp-string"()")))
+  (cond
+    (a
+      (pp-position)
+      (write a))
+    (t
+      (pp-string"()"))))
 
 (defun pp-string(s)
   (pp-position)
   (princ s))
+
+(defun pp-special(a n)
+      (pp-string "(")
+      (pp-write(pop a))
+      (dotimes(i n)
+      (pp-string " ")
+      (pp-write(pop a)))
+      (let ((*indent*(+ *indent* 2)))
+        (loop
+          while a do
+          (next-line)
+          (pp(pop a)))
+        (pp-string ")"))
+)
 
 (defun pp(a)
   (cond
@@ -56,21 +69,15 @@
   )
 
   ;special forms
-    ((member  (car a) '(defun))
+    ((eq  (car a) 'defun)
   (blank-line)
-      (pp-string "(")
-      (pp-write(pop a))
-      (pp-string " ")
-      (pp-write(pop a))
-      (pp-string " ")
-      (pp-list(pop a))
-      (let ((*indent*(+ *indent* 2)))
-        (loop
-          while a do
-          (next-line)
-          (pp(pop a)))
-        (pp-string ")"))
+  (pp-special a 2)
   (blank-line)
+        )
+
+        ;1 special arg
+    ((member  (car a) '(dolist dotimes))
+  (pp-special a 1)
         )
 
         ;multiline
