@@ -45,6 +45,8 @@
         (pp-string ")"))
 )
 
+
+
 (defun pp(a)
   (cond
   ;atom
@@ -73,6 +75,25 @@
   (blank-line)
   (pp-special a 2)
   (blank-line)
+        )
+    ((eq  (car a) 'let)
+      (pp-string "(")
+      (pp-write(pop a))
+      (pp-string " (")
+      (let (  (vars(pop a))
+              (*indent*(+ *indent* 6)))
+             (pp-write(pop vars))
+             (dolist (v vars)
+              (next-line)
+              (pp-write v))
+      )
+      (pp-string")")
+      (let        ((*indent*(+ *indent* 2)))
+        (loop
+          while a do
+          (next-line)
+          (pp(pop a)))
+        (pp-string ")"))
         )
 
         ;1 special arg
