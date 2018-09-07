@@ -15,6 +15,23 @@
 (dolist (file +args+)
 (princ file)
 (terpri)
-  (let ((s (read-file file)))
+  (let (
+            (s (read-file file))
+            (backup(make-pathname :defaults file :directory "/tmp/" ))
+        )
+    (handler-case
+    	(progn
+        (delete-file  backup)
+      )
+  	  (error (c)
+  	  )
+  	)
+    (handler-case
+    	(progn
+        (rename-file file backup)
+      )
+  	  (error (c)
+  	  )
+  	)
     (write-file file s)))
 (quit)
