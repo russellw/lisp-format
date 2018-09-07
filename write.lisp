@@ -100,7 +100,7 @@
         )
 
         ;1 special arg
-    ((member  (car a) '(dolist dotimes))
+    ((member  (car a) '(dolist dotimes with-open-file))
   (pp-special a 1)
         )
 
