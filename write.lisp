@@ -67,4 +67,5 @@
   (funcall(writer a)a))
 
 (defun write-file (file s)
-  (mapc #'pp s))
+  (let((*print-case* :downcase))
+  (mapc #'pp s)))
