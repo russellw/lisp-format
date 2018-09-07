@@ -32,6 +32,12 @@
   (pp-position)
   (princ s))
 
+(defun pp-feature-test(a)
+  (pp-string"#+")
+  (pp(cadr a))
+  (pp-string" ")
+  (pp(caddr a)))
+
 (defun pp-line-comment(a)
       (blank-line)
       (pp-string (cadr a))
@@ -58,6 +64,8 @@
   (cond
     ((atom a)
       #'pp-write)
+    ((eq(car a)+feature-test+)
+      #'pp-feature-test)
     ((eq(car a)+line-comment+)
       #'pp-line-comment)
     ((member (car a)'(defun))
