@@ -32,18 +32,31 @@
   (pp-position)
   (princ s))
 
-(defun pp-feature-test(a)
+(defun pp(a)
+  (cond
+  ;atom
+    ((atom a)
+      (pp-write a))
+
+      ;comment
+    ((eq (car a) +line-comment+)
+      (blank-line)
+      (pp-string (cadr a))
+      (next-line)
+      )
+
+;reader macros
+    ((eq (car a) +feature-test+)
+      (next-line)
   (pp-string"#+")
   (pp(cadr a))
   (pp-string" ")
-  (pp(caddr a)))
+  (pp(caddr a))
+      (next-line)
+  )
 
-(defun pp-line-comment(a)
-      (blank-line)
-      (pp-string (cadr a))
-      (next-line))
-
-(defun pp-defun(a)
+  ;special forms
+    ((member  (car a) '(defun))
   (blank-line)
       (pp-string "(")
       (pp-write(pop a))
@@ -60,21 +73,49 @@
   (blank-line)
         )
 
-(defun writer(a)
-  (cond
-    ((atom a)
-      #'pp-write)
-    ((eq(car a)+feature-test+)
-      #'pp-feature-test)
-    ((eq(car a)+line-comment+)
-      #'pp-line-comment)
-    ((member (car a)'(defun))
-      #'pp-defun)
-    (t
-      #'pp-write)))
+        ;multiline
+        ((multiline a)
+          (next-line )
+      (pp-string "(")
+      (pp(pop a))
+      (let ((*indent*(+ *indent* 2)))
+        (loop
+          while a do
+          (next-line)
+          (pp(pop a)))
+        (pp-string ")"))
+  (next-line)
+        )
 
-(defun pp(a)
-  (funcall(writer a)a))
+        ;inline
+        (t
+      (pp-string "(")
+      (pp(pop a))
+        (loop
+          while a do
+          (pp-string" ")
+          (pp(pop a)))
+        (pp-string ")"))
+
+))
+
+(defun multiline(a)
+  (cond
+  ;atom
+    ((atom a)
+      nil)
+      ;comment
+    ((eq (car a) +line-comment+)
+      t)
+;reader macros
+    ((eq (car a) +feature-test+)
+    t)
+    ;special forms
+    ((member  (car a) '(defun))
+      t)
+      ;etc
+    (t
+      (some #'multiline a))))
 
 (defun write-file (file s)
   (with-open-file (*standard-output* file
