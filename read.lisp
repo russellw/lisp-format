@@ -1,20 +1,20 @@
-(defun line-comment-reader (st c)
+(defun line-comment-reader (*standard-input* c)
   (list +line-comment+
     (concatenate 'string
                      (string c)
-                     (read-line st nil #\Newline t))))
+                     (read-line *standard-input* nil #\Newline t))))
 
-(defun feature-test-reader (st c x)
+(defun feature-test-reader (*standard-input* c x)
    (declare (ignore c x))
    (list +feature-test+
-    (read st t nil t)
-    (read st t nil t)))
+    (read *standard-input* t nil t)
+    (read *standard-input* t nil t)))
 
 (defun read-file (file)
-  (with-open-file (st file)
+  (with-open-file (*standard-input* file)
     (set-macro-character (char ";" 0) #'line-comment-reader)
     (set-dispatch-macro-character #\# #\+ #'feature-test-reader)
     (loop
-      for x = (read st nil st)
-      until (eq x st)
+      for x = (read *standard-input* nil *standard-input*)
+      until (eq x *standard-input*)
       collect x)))
