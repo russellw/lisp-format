@@ -68,6 +68,10 @@
   (pp(caddr a))
       (next-line)
   )
+    ((eq (car a) 'function)
+  (pp-string"#'")
+  (pp(cadr a))
+  )
 
   ;special forms
     ((eq  (car a) 'defun)
