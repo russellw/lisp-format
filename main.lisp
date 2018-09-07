@@ -13,6 +13,8 @@
 
 ;files
 (dolist (file +args+)
+(princ file)
+(terpri)
   (let ((s (read-file file)))
     (write-file file s)))
 (quit)

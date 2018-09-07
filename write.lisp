@@ -38,10 +38,9 @@
       (pp-string " ")
       (pp-write(pop a)))
       (let ((*indent*(+ *indent* 2)))
-        (loop
-          while a do
+        (dolist(b a)
           (next-line)
-          (pp(pop a)))
+          (pp b))
         (pp-string ")"))
 )
 
@@ -89,10 +88,9 @@
       )
       (pp-string")")
       (let        ((*indent*(+ *indent* 2)))
-        (loop
-          while a do
+        (dolist(b a)
           (next-line)
-          (pp(pop a)))
+          (pp b))
         (pp-string ")"))
         )
 
@@ -107,10 +105,9 @@
       (pp-string "(")
       (pp(pop a))
       (let ((*indent*(+ *indent* 2)))
-        (loop
-          while a do
+        (dolist(b a)
           (next-line)
-          (pp(pop a)))
+          (pp b))
         (pp-string ")"))
   (next-line)
         )
@@ -119,10 +116,9 @@
         (t
       (pp-string "(")
       (pp(pop a))
-        (loop
-          while a do
+        (dolist(b a)
           (pp-string" ")
-          (pp(pop a)))
+          (pp b))
         (pp-string ")"))
 
 ))
@@ -150,9 +146,8 @@
     :direction :output
     :if-exists :supersede)
   (let((*print-case* :downcase))
-        (loop
-          while s do
+        (dolist(a s)
           (next-line)
-          (pp(pop s)))
+          (pp a))
   (terpri)
   )))
