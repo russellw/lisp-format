@@ -19,19 +19,11 @@
             (s (read-file file))
             (backup(make-pathname :defaults file :directory "/tmp/" ))
         )
-    (handler-case
-    	(progn
+    	(ignore-errors
         (delete-file  backup)
       )
-  	  (error (c)
-  	  )
-  	)
-    (handler-case
-    	(progn
+    	(ignore-errors
         (rename-file file backup)
       )
-  	  (error (c)
-  	  )
-  	)
     (write-file file s)))
 (quit)
