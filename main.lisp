@@ -1,5 +1,5 @@
 ;extra forms
-(defconstant +comment+ (gensym))
+(defconstant +line-comment+ (gensym))
 (defconstant +feature-test+ (gensym))
 
 ;modules

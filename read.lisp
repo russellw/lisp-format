@@ -1,5 +1,5 @@
-(defun comment-reader (st c)
-  (list +comment+
+(defun line-comment-reader (st c)
+  (list +line-comment+
     (concatenate 'string
                      (string c)
                      (read-line st nil #\Newline t))))
@@ -12,7 +12,7 @@
 
 (defun read-file (file)
   (with-open-file (st file)
-    (set-macro-character (char ";" 0) #'comment-reader)
+    (set-macro-character (char ";" 0) #'line-comment-reader)
     (set-dispatch-macro-character #\# #\+ #'feature-test-reader)
     (loop
       for x = (read st nil st)
