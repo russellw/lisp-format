@@ -107,7 +107,7 @@
   )
     ((eq (car a) 'quote)
   (pp-string"'")
-  (pp(cadr a))
+  (pp-write(cadr a))
   )
 
   ;special forms
@@ -189,6 +189,9 @@
   t
         )
       ;etc
+    ((eq (car a) 'quote)
+    nil)
+
     (t
       (some #'multiline a))))
 
