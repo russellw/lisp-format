@@ -111,6 +111,38 @@
   )
 
   ;special forms
+
+
+    ((eq  (car a) 'cond)
+      (pp-string "(")
+      (pp-write(pop a))
+      (let        ((*indent*(+ *indent* 2)))
+        (dolist(b a)
+
+(cond
+    ((eq (car b) +line-comment+)
+      (blank-line)
+      (pp-string (cadr b))
+      (next-line)
+      )
+
+(t
+      (next-line)
+      (pp-string "(")
+      (let        ((*indent*(+ *indent* 1)))
+      (pp(pop b))
+      (pp-lines b)
+      (pp-string ")")
+      )
+)
+
+)
+
+        )
+        (pp-string ")"))
+        )
+
+
     ((eq  (car a) 'defun)
   (blank-line)
   (pp-special a 2)
