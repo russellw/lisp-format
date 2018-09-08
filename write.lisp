@@ -44,7 +44,20 @@
         (pp-string ")"))
 )
 
+(defun loop-keyword(a)
+(member a '(for until collect)))
 
+(defun pp-loop(a)
+      (pp-string "(")
+      (pp-write(pop a))
+      (let ((*indent*(+ *indent* 2)))
+        (loop
+          while a
+          do
+          (next-line)
+          (pp (pop a)))
+        (pp-string ")"))
+)
 
 (defun pp(a)
   (cond
@@ -101,6 +114,8 @@
           (pp b))
         (pp-string ")"))
         )
+    ((eq  (car a) 'loop)
+      (pp-loop a))
 
         ;0 special args
     ((member  (car a) '(ignore-errors))
@@ -148,8 +163,17 @@
     ((eq (car a) +feature-test+)
     t)
     ;special forms
-    ((member  (car a) '(defun))
+    ((member  (car a) '(defun let loop))
       t)
+        ;0 special args
+    ((member  (car a) '(ignore-errors))
+ t
+        )
+
+        ;1 special arg
+    ((member  (car a) '(dolist dotimes with-open-file))
+  t
+        )
       ;etc
     (t
       (some #'multiline a))))
