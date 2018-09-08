@@ -147,13 +147,11 @@
 
         ;multiline
         ((multiline a)
-          (next-line )
       (pp-string "(")
       (pp(pop a))
       (let ((*indent*(+ *indent* 2)))
         (pp-lines a)
         (pp-string ")"))
-  (next-line)
         )
 
         ;inline
