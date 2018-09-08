@@ -20,12 +20,8 @@
   )
 
 (defun pp-write(a)
-  (cond
-    (a
       (pp-position)
       (write a))
-    (t
-      (pp-string"()"))))
 
 (defun pp-string(s)
   (pp-position)
@@ -47,8 +43,15 @@
           (next-line)
           (pp a)))
 
+(defun pp-spaces(s)
+        (dolist(a s)
+          (pp-string" ")
+          (pp a)))
+
+
 (defun loop-keyword(a)
-(member a '(for until collect)))
+(or(not a)
+(member a '(for until collect))))
 
 (defun pp-loop(a)
       (pp-string "(")
@@ -57,8 +60,22 @@
         (loop
           while a
           do
-          (next-line)
-          (pp (pop a)))
+
+          (cond
+            ((loop-keyword(car a))
+              (next-line)
+              (pp (pop a))
+              (loop
+                until (loop-keyword(car a))
+                do
+                (pp-string" ")
+                (pp (pop a))))
+            (t
+              (pp-lines a)
+              (setf a nil)))
+        )
+
+
         (pp-string ")"))
 )
 
@@ -143,9 +160,7 @@
         (t
       (pp-string "(")
       (pp(pop a))
-        (dolist(b a)
-          (pp-string" ")
-          (pp b))
+        (pp-spaces a)
         (pp-string ")"))
 
 ))
