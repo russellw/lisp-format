@@ -51,7 +51,18 @@
 
 (defun loop-keyword(a)
 (or(not a)
-(member a '(for until collect))))
+(member a '(
+named
+
+initially finally for as with
+
+do collect collecting append
+appending nconc nconcing into count
+counting sum summing maximize return
+maximizing minimize minimizing doing
+thereis always never if when
+unless repeat while until
+))))
 
 (defun pp-loop(a)
       (pp-string "(")
@@ -62,6 +73,10 @@
           do
 
           (cond
+            ((eq(car a)'do)
+              (pp-lines a)
+              (setf a nil)
+            )
             ((loop-keyword(car a))
               (next-line)
               (pp (pop a))
