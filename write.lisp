@@ -15,7 +15,7 @@
       (dotimes (i *newlines*)
         (terpri)))
     (dotimes (i *indent*)
-      (write-char #\ ))
+      (write-char #\Space))
     (setf *newlines* 0)))
 
 (defun pp-write (a)
@@ -81,6 +81,8 @@
   (cond
 
     ;atom
+    ((eql a #\Space)
+     (pp-string "#\\Space"))
     ((atom a)
      (pp-write a))
 
