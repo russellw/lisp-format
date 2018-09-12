@@ -6,7 +6,7 @@
 (load "read")
 (load "write")
 
-(defun main nil
+(defun main ()
   (let ((args))
     (setf
       args

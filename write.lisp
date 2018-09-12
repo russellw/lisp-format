@@ -1,13 +1,13 @@
 (defvar *indent* 0)
 (defvar *newlines* 0)
 
-(defun next-line nil
+(defun next-line ()
   (setf *newlines* (max *newlines* 1)))
 
-(defun blank-line nil
+(defun blank-line ()
   (setf *newlines* 2))
 
-(defun pp-position nil
+(defun pp-position ()
   (unless
     (= *newlines* 0)
     (unless
@@ -22,6 +22,10 @@
   (pp-position)
   (write a))
 
+(defun pp-list (a)
+  (pp-position)
+  (if a (write a) (princ "()")))
+
 (defun pp-string (s)
   (pp-position)
   (princ s))
@@ -31,7 +35,7 @@
   (pp-write (pop a))
   (dotimes (i n)
     (pp-string " ")
-    (pp-write (pop a)))
+    (pp-list (pop a)))
   (let ((*indent* (+ *indent* 2)))
     (pp-lines a)
     (pp-string ")")))
