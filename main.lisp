@@ -6,15 +6,16 @@
 (load "read")
 (load "write")
 
-;command line
-(defconstant
-  +args+
-  #+ccl *unprocessed-command-line-arguments*
-  #+sbcl (cdr *posix-argv*)
-  )
 
-;files
-(dolist (file +args+)
+;main
+(defun main()
+(let
+  ((args))
+  (setf args
+  #+ccl *unprocessed-command-line-arguments*
+  #+sbcl (cdr *posix-argv*))
+
+(dolist (file args)
   (princ file)
   (terpri)
   (let ((s (read-file file))
@@ -25,3 +26,4 @@
       (rename-file file backup))
     (write-file file s)))
 (quit)
+))
