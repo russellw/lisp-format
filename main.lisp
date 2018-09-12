@@ -24,3 +24,5 @@
           (rename-file file backup))
         (write-file file s)))
     (quit)))
+
+(main)
