@@ -85,8 +85,8 @@
   (cond
 
     ;atom
-    ((eql a #\Space)
-     (pp-string "#\\Space"))
+    ((characterp a)
+     (format t "#\\~:c" a))
     ((atom a)
      (pp-write a))
 
