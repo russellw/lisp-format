@@ -1,3 +1,5 @@
+;boilerplate
+#+sbcl (declaim (sb-ext:muffle-conditions style-warning))
 ;extra forms
 (defconstant +line-comment+ (gensym))
 (defconstant +feature-test+ (gensym))
@@ -24,5 +26,3 @@
           (rename-file file backup))
         (write-file file s)))
     (quit)))
-
-(main)
