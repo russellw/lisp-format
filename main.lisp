@@ -1,5 +1,6 @@
 ;boilerplate
-#+sbcl (declaim (sb-ext:muffle-conditions style-warning))
+#+sbcl (declaim (muffle-conditions style-warning))
+
 ;extra forms
 (defconstant +line-comment+ (gensym))
 (defconstant +feature-test+ (gensym))
