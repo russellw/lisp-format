@@ -134,8 +134,7 @@
      (blank-line)
      (pp-special a 2)
      (blank-line))
-    ((member (car a) '(let let*
-                        ))
+    ((member (car a) (list 'let 'let*))
      (pp-string "(")
      (let* ((op (pop a))
             (vars (pop a))
