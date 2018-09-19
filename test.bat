@@ -1,1 +1,1 @@
-sbcl --script main.lisp %*
+sbcl --disable-debugger --load main.lisp %*

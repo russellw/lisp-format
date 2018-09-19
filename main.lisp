@@ -25,5 +25,7 @@
           (delete-file backup))
         (ignore-errors
           (rename-file file backup))
+
+        ;TODO: on error, restore backup
         (write-file file s)))
     (quit)))
