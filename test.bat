@@ -1,1 +1,1 @@
-sbcl --disable-debugger --load main.lisp %*
+sbcl --non-interactive --load main.lisp %*
