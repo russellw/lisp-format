@@ -97,22 +97,42 @@
   (cond
     ((not(peek-char t *standard-input* nil))
       (setf *tok* nil))
-      ;comment
-      ((eql(peek-char)(char";"0))
-      (setf *tok* (read-line))
-      )
-      ;number or symbol
-    ((eq(syntax-type(peek-char))'constituent)
+
+    ;comment
+    ((eql(peek-char)(char";"0))
+    (setf *tok* (read-line))
+    )
+
+    ;number or symbol
+    ((eql(peek-char)(char"|"0))
       (setf *tok*
-        (coerce
-        (loop
-          while(eq(syntax-type(peek-char))'constituent)
-          collect(read-char)
-        )
-        'string
+        (concatenate 'string
+          (list(read-char))
+          (loop
+            until (eql(peek-char)(char"|"0))
+            when (eql(peek-char)(char"\\"0))
+            collect(read-char)
+            collect(read-char)
+          )
+          (list(read-char))
         )
       )
     )
+    ((eq(syntax-type(peek-char))'constituent)
+      (setf *tok*
+        (coerce
+          (loop
+            while
+              (case(syntax-type(peek-char))
+                ((constituent non-terminating-macro-char)
+                  t))
+            collect(read-char)
+          )
+          'string
+        )
+      )
+    )
+
     ;other
     (t
       (setf *tok* (string(read-char)))
