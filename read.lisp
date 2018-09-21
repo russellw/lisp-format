@@ -90,6 +90,36 @@
   )
 )
 
+;tokenizer
+(defvar *tok* nil)
+
+(defun lex()
+  (cond
+    ((not(peek-char t *standard-input* nil))
+      (setf *tok* nil))
+      ;comment
+      ((eql(peek-char)(char";"0))
+      (setf *tok* (read-line))
+      )
+      ;number or symbol
+    ((eq(syntax-type(peek-char))'constituent)
+      (setf *tok*
+        (coerce
+        (loop
+          while(eq(syntax-type(peek-char))'constituent)
+          collect(read-char)
+        )
+        'string
+        )
+      )
+    )
+    ;other
+    (t
+      (setf *tok* (string(read-char)))
+    )
+  )
+)
+
 (defun line-comment-reader (*standard-input* c)
   (list +line-comment+ (concatenate 'string (string c) (read-line *standard-input* nil #\Newline t))))
 

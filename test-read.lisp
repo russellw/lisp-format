@@ -11,8 +11,18 @@
     (dolist (file args)
       (princ file)
       (terpri)
-      (let ((s (read-file file)))
-      (print s)
-)))
+      (pprint
+        (with-open-file (*standard-input* file)
+          (lex)
+          (loop
+            while *tok*
+            collect *tok*
+            do
+            (lex)
+          )
+        )
+      )
+    )
+  )
 ;end
 (quit)
