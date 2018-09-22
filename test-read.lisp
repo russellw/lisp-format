@@ -14,11 +14,16 @@
       (pprint
         (with-open-file (*standard-input* file)
           (lex)
-          (loop
-            while *tok*
-            collect *tok*
-            do
-            (lex)
+          (if nil
+            (progn
+              (loop
+                while *tok*
+                collect *tok*
+                do
+                (lex)
+              )
+            )
+            (read-all)
           )
         )
       )

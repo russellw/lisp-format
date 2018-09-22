@@ -97,20 +97,23 @@
 ;tokenizer
 (defvar *tok* nil)
 
-(defun token-char()
-                                  (when (eql(peek-char)(char"\\"0))
-                                    (read-char))
-                                  (read-char))
+(defun single-escape()
+                                  (if (eql(peek-char)(char"\\"0))
+                                    (list(read-char)(read-char))
+                                    (list(read-char))))
 
 (defun multiple-escape()
-                        (read-char)
-                        (let ((r
-                                (loop
-                                  until (eql(peek-char)(char"|"0))
-                                  collect(token-char)
-                                )))
-                         (read-char)
-                         r)
+          (if (eql(peek-char)(char"\\"0))
+            (append
+                        (list(read-char))
+                        (loop
+                          until (eql(peek-char)(char"|"0))
+                          append(single-escape)
+                        )
+                        (list(read-char))
+            )
+            (list(read-char))
+          )
 )
 
 (defun lex()
@@ -126,18 +129,13 @@
     ;number or symbol
     ((member(syntax-type(peek-char))(list 'constituent 'single-escape 'multiple-escape))
       (setf *tok*
-        (let((s
                 (coerce
                     (loop
                       while(member(syntax-type(peek-char))(list 'constituent 'single-escape 'multiple-escape 'non-terminating-macro-char))
-                      if (eql(peek-char)(char"|"0))
-                        append(multiple-escape)
-                      else
-                        collect(token-char)
+                      append(multiple-escape)
                     )
                   'string
-                )))
-           (intern s))
+                )
       )
     )
 
@@ -149,10 +147,68 @@
 )
 
 ;parser
+(defun unescape-token(s)
+  (let ((i 0))
+    (labels
+      (
+        (readc()
+              (let ((c(char s i)))
+                (incf i)
+                c
+              )
+        )
+        (escape()
+          (cond
+            ((eql (char s i) (char "|" 0))
+              (incf i)
+              (let((r
+                      (loop
+                        until(eql (char s i) (char "|" 0))
+                        if(eql (char s i) (char "\\" 0))
+                          do(incf i)
+                        collect(readc)
+                      )
+                   ))
+                 (incf i)
+                 r)
+            )
+            ((eql (char s i) (char "\\" 0))
+              (incf i)
+              (list(readc))
+            )
+            (t
+              (list (char-upcase (readc)))
+            )
+          )
+        )
+      )
+      (coerce
+      (loop
+        while (< i (length s))
+        append(escape)
+      )
+      'string)
+    )
+  )
+)
+
 (defun read*()
   (cond
     ((not *tok*)
       (err "unexpected end of file"))
+    (t
+      (let ((s(unescape-token *tok*)))
+        (lex)
+        s
+      )
+    )
+  )
+)
+
+(defun read-all()
+  (loop
+    while *tok*
+    collect (read*)
   )
 )
 
