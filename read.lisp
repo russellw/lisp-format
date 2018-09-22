@@ -1,3 +1,5 @@
+(defconstant +line-comment+ (gensym))
+(defconstant +feature-test+ (gensym))
 (defun err(msg)
   (princ msg)
   (quit))
@@ -147,59 +149,19 @@
 )
 
 ;parser
-(defun unescape-token(s)
-  (let ((i 0))
-    (labels
-      (
-        (readc()
-              (let ((c(char s i)))
-                (incf i)
-                c
-              )
-        )
-        (escape()
-          (cond
-            ((eql (char s i) (char "|" 0))
-              (incf i)
-              (let((r
-                      (loop
-                        until(eql (char s i) (char "|" 0))
-                        if(eql (char s i) (char "\\" 0))
-                          do(incf i)
-                        collect(readc)
-                      )
-                   ))
-                 (incf i)
-                 r)
-            )
-            ((eql (char s i) (char "\\" 0))
-              (incf i)
-              (list(readc))
-            )
-            (t
-              (list (char-upcase (readc)))
-            )
-          )
-        )
-      )
-      (coerce
-      (loop
-        while (< i (length s))
-        append(escape)
-      )
-      'string)
-    )
-  )
-)
 
 (defun read*()
   (cond
     ((not *tok*)
       (err "unexpected end of file"))
+    ((eql *tok* (char "'" 0))
+      (lex)
+      (list 'quote (read*))
+    )
     (t
-      (let ((s(unescape-token *tok*)))
+      (let ((s *tok*))
         (lex)
-        s
+        (read-from-string s)
       )
     )
   )

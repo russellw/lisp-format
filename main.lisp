@@ -1,12 +1,8 @@
 ;boilerplate
 #+sbcl (declaim (muffle-conditions style-warning))
 
-;extra forms
-(defconstant +line-comment+ (gensym))
-(defconstant +feature-test+ (gensym))
 
 ;modules
-(load "etc")
 (load "read")
 (load "write")
 
