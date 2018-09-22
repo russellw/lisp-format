@@ -1,3 +1,7 @@
+(defun err(msg)
+  (princ msg)
+  (quit))
+
 ;http://www.lispworks.com/documentation/lw50/CLHS/Body/02_ad.htm
 (defun syntax-type(c)
   (cond
@@ -93,6 +97,21 @@
 ;tokenizer
 (defvar *tok* nil)
 
+(defun token-char()
+                                  (when (eql(peek-char)(char"\\"0))
+                                    (read-char))
+                                  (read-char))
+
+(defun multiple-escape()
+                        (read-char)
+                        (let ((r
+                                (loop
+                                  until (eql(peek-char)(char"|"0))
+                                  collect(token-char)
+                                )))
+                         (read-char)
+                         r)
+)
 
 (defun lex()
   (cond
@@ -107,27 +126,18 @@
     ;number or symbol
     ((member(syntax-type(peek-char))(list 'constituent 'single-escape 'multiple-escape))
       (setf *tok*
-      (coerce
-        (flatten
-          (loop
-            while(member(syntax-type(peek-char))(list 'constituent 'single-escape 'multiple-escape 'non-terminating-macro-char))
-            if (eql(peek-char)(char"|"0))
-              collect(list
-                (read-char)
-                (loop
-                  until (eql(peek-char)(char"|"0))
-                  if (eql(peek-char)(char"\\"0))
-                  collect(read-char)
-                  collect(read-char)
-                )
-                (read-char)
-              )
-            else
-              collect(read-char)
-          )
-        )
-        'string
-      )
+        (let((s
+                (coerce
+                    (loop
+                      while(member(syntax-type(peek-char))(list 'constituent 'single-escape 'multiple-escape 'non-terminating-macro-char))
+                      if (eql(peek-char)(char"|"0))
+                        append(multiple-escape)
+                      else
+                        collect(token-char)
+                    )
+                  'string
+                )))
+           (intern s))
       )
     )
 
@@ -135,6 +145,14 @@
     (t
       (setf *tok* (string(read-char)))
     )
+  )
+)
+
+;parser
+(defun read*()
+  (cond
+    ((not *tok*)
+      (err "unexpected end of file"))
   )
 )
 
