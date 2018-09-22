@@ -114,7 +114,7 @@
                         )
                         (list(read-char))
             )
-            (list(read-char))
+            (single-escape)
           )
 )
 
@@ -133,7 +133,8 @@
       (setf *tok*
                 (coerce
                     (loop
-                      while(member(syntax-type(peek-char))(list 'constituent 'single-escape 'multiple-escape 'non-terminating-macro-char))
+                      while(member(syntax-type(peek-char nil *standard-input* nil))
+                                  (list 'constituent 'single-escape 'multiple-escape 'non-terminating-macro-char))
                       append(multiple-escape)
                     )
                   'string
@@ -154,7 +155,7 @@
   (cond
     ((not *tok*)
       (err "unexpected end of file"))
-    ((eql *tok* (char "'" 0))
+    ((equal *tok* "'" )
       (lex)
       (list 'quote (read*))
     )
@@ -166,8 +167,8 @@
     )
   )
 )
-
 (defun read-all()
+  (lex)
   (loop
     while *tok*
     collect (read*)

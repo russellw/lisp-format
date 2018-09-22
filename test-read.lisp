@@ -13,9 +13,9 @@
       (terpri)
       (pprint
         (with-open-file (*standard-input* file)
-          (lex)
           (if nil
             (progn
+              (lex)
               (loop
                 while *tok*
                 collect *tok*
