@@ -93,6 +93,7 @@
 ;tokenizer
 (defvar *tok* nil)
 
+
 (defun lex()
   (cond
     ((not(peek-char t *standard-input* nil))
@@ -104,32 +105,29 @@
     )
 
     ;number or symbol
-    ((eql(peek-char)(char"|"0))
+    ((member(syntax-type(peek-char))(list 'constituent 'single-escape 'multiple-escape))
       (setf *tok*
-        (concatenate 'string
-          (list(read-char))
+      (coerce
+        (flatten
           (loop
-            until (eql(peek-char)(char"|"0))
-            when (eql(peek-char)(char"\\"0))
-            collect(read-char)
-            collect(read-char)
+            while(member(syntax-type(peek-char))(list 'constituent 'single-escape 'multiple-escape 'non-terminating-macro-char))
+            if (eql(peek-char)(char"|"0))
+              collect(list
+                (read-char)
+                (loop
+                  until (eql(peek-char)(char"|"0))
+                  if (eql(peek-char)(char"\\"0))
+                  collect(read-char)
+                  collect(read-char)
+                )
+                (read-char)
+              )
+            else
+              collect(read-char)
           )
-          (list(read-char))
         )
+        'string
       )
-    )
-    ((eq(syntax-type(peek-char))'constituent)
-      (setf *tok*
-        (coerce
-          (loop
-            while
-              (case(syntax-type(peek-char))
-                ((constituent non-terminating-macro-char)
-                  t))
-            collect(read-char)
-          )
-          'string
-        )
       )
     )
 

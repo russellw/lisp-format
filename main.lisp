@@ -6,6 +6,7 @@
 (defconstant +feature-test+ (gensym))
 
 ;modules
+(load "etc")
 (load "read")
 (load "write")
 
