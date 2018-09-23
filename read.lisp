@@ -157,6 +157,18 @@
   (cond
     ((not *tok*)
       (err "unexpected end of file"))
+    ((equal *tok* "(" )
+      (lex)
+      (prog1
+      (loop
+        until(equal *tok*")")
+        collect(read*)
+      )
+      (lex)
+      )
+    )
+    ((equal *tok* ")" )
+      (err"unexpected ')'"))
     ((equal *tok* "'" )
       (lex)
       (list 'quote (read*))
