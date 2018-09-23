@@ -1,3 +1,4 @@
+(defconstant +backquote+ (gensym))
 (defconstant +line-comment+ (gensym))
 (defconstant +package-marker+ (gensym))
 (defconstant +package-marker-2+ (gensym))
@@ -188,6 +189,10 @@
     )
     ((eql(elt *tok* 0)(elt "\"" 0))
       (prog1 (read-from-string *tok*) (lex))
+    )
+    ((equal *tok* "`" )
+      (lex)
+      (list +backquote+ (read*))
     )
     (t
       (let ((s *tok*))

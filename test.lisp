@@ -32,3 +32,4 @@
 (assert(equal(read1 "\"\"")""))
 (assert(equal(read1 "\"\\\"APL\\\\360?\\\" he cried.\"")"\"APL\\360?\" he cried."))
 (assert(equal(read1 "\"|x| = |-x|\"")"|x| = |-x|"))
+(assert(equal(read1 "`a")(list +backquote+ 'a)))
