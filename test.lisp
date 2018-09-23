@@ -71,3 +71,5 @@ do(lex)))
 (assert(equal(read1 "#\\newline")#\newline))
 (assert(equal(read1 "#\\a")#\a))
 (assert(equal(read1 "#\\'")#\'))
+;Sharpsign Single-Quote
+(assert(equal(read1 "#'+")'(function +)))

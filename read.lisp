@@ -123,6 +123,17 @@
           )
 )
 
+(defun digits()
+                (coerce
+                    (loop
+                      while(and(peek-char nil *standard-input* nil)
+                               (digit-char-p(peek-char)))
+                      collect(read-char)
+                    )
+                  'string
+                )
+)
+
 (defun token()
                 (coerce
                     (loop
@@ -174,23 +185,35 @@
     )
     )
 
-;sharpsign
-;http://www.lispworks.com/documentation/lw50/CLHS/Body/02_dh.htm
+    ;sharpsign
+    ;http://www.lispworks.com/documentation/lw50/CLHS/Body/02_dh.htm
     ((eql(peek-char)(elt"#"0))
-    (read-char)
-    (cond
-      ((not(peek-char nil *standard-input* nil))
-        (err "unexpected end of file"))
+      (read-char)
+      (let((arg(digits)))
+        (concatenate 'string
+          "#"
+          arg
+          (cond
+            ((not(peek-char nil *standard-input* nil))
+              (err "unexpected end of file"))
 
-      ;Sharpsign Backslash
-      ((eql(peek-char)(elt"\\"0))
-        (read-char)
-        (concatenate 'string"#\\"
-          (if(eq(syntax-type(peek-char nil *standard-input* nil))'constituent)
-            (token)
-            (list(read-char))))
+            ;Sharpsign Backslash
+            ((eql(peek-char)(elt"\\"0))
+              (read-char)
+              (concatenate 'string
+                "\\"
+                (if(eq(syntax-type(peek-char nil *standard-input* nil))'constituent)
+                  (token)
+                  (list(read-char)))
+              )
+            )
+
+            ;other
+            (t
+              (list(read-char)))
+          )
+        )
       )
-    )
     )
 
     ;other
@@ -290,6 +313,12 @@
             (t
               (elt *tok* 2))
           )
+        )
+
+        ;Sharpsign Single-Quote
+        ((equal *tok*"#'")
+          (lex)
+          (list 'function (read*))
         )
 
       )
