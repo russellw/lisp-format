@@ -3,6 +3,7 @@
 
 
 ;modules
+(load "etc")
 (load "read")
 (load "write")
 

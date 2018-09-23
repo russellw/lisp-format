@@ -1,1 +1,1 @@
-sbcl --non-interactive --load main.lisp %*
+sbcl --script test.lisp
