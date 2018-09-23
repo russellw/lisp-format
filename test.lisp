@@ -15,8 +15,22 @@
 (assert(equal(split-string " " "one two three ")'("one" "two" "three")))
 
 ;read*
+(defun read-tokens()
+(loop
+while *tok*
+collect *tok*
+do(lex)))
+
 (defun read1(s)
-(format t "~a~%" s)
+(when t
+(format t "~a~40T~a~%" s
+(with-input-from-string(*standard-input* s)
+(lex)
+(read-tokens)
+)
+)
+)
+
 (with-input-from-string(*standard-input* s)
 (lex)
 (read*)))
