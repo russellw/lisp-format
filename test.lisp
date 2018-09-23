@@ -20,16 +20,35 @@
 (with-input-from-string(*standard-input* s)
 (lex)
 (read*)))
-
+;numbers
 (assert(equal(read1 "123")123))
+(assert(equal(read1 "+123")+123))
+(assert(equal(read1 "-123")-123))
+(assert(equal(read1 "123/456")123/456))
+(assert(equal(read1 "-123/456")-123/456))
+(assert(equal(read1 "123.5")123.5))
+(assert(equal(read1 "-123.5")-123.5))
+(assert(equal(read1 "123.5e6")123.5e6))
+(assert(equal(read1 "-123.5e6")-123.5e6))
+;symbols
 (assert(equal(read1 "a")'a))
 (assert(equal(read1 "\\a")'\a))
 (assert(equal(read1 "|one two three|")'|one two three|))
 (assert(equal(read1 ":abc"):abc))
 (assert(equal(read1 "abc:xyz")(list +package-marker+ 'abc 'xyz)))
 (assert(equal(read1 "abc::xyz")(list +package-marker-2+ 'abc 'xyz)))
+;left-parenthesis
+(assert(equal(read1 "(a b c (d e f) g h i)")'(a b c (d e f) g h i)))
+;single-quote
+(assert(equal(read1 "'a")' 'a))
+;semicolon
+(assert(equal(read1 "; comment")(list +line-comment+ "; comment")))
+;double-quote
 (assert(equal(read1 "\"Foo\"")"Foo"))
 (assert(equal(read1 "\"\"")""))
 (assert(equal(read1 "\"\\\"APL\\\\360?\\\" he cried.\"")"\"APL\\360?\" he cried."))
 (assert(equal(read1 "\"|x| = |-x|\"")"|x| = |-x|"))
+;backquote
 (assert(equal(read1 "`a")(list +backquote+ 'a)))
+;comma
+;sharpsign

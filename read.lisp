@@ -187,8 +187,15 @@
       (lex)
       (list 'quote (read*))
     )
+    ((eql(elt *tok* 0)(elt ";" 0))
+      (prog1
+        (list +line-comment+ *tok*)
+        (lex))
+    )
     ((eql(elt *tok* 0)(elt "\"" 0))
-      (prog1 (read-from-string *tok*) (lex))
+      (prog1
+        (read-from-string *tok*)
+        (lex))
     )
     ((equal *tok* "`" )
       (lex)
