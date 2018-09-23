@@ -51,13 +51,13 @@ do(lex)))
 (assert(equal(read1 ":abc"):abc))
 (assert(equal(read1 "abc:xyz")(list +package-marker+ 'abc 'xyz)))
 (assert(equal(read1 "abc::xyz")(list +package-marker-2+ 'abc 'xyz)))
-;left-parenthesis
+;Left-Parenthesis
 (assert(equal(read1 "(a b c (d e f) g h i)")'(a b c (d e f) g h i)))
-;single-quote
+;Single-Quote
 (assert(equal(read1 "'a")' 'a))
 ;semicolon
 (assert(equal(read1 "; comment")(list +line-comment+ "; comment")))
-;double-quote
+;Double-Quote
 (assert(equal(read1 "\"Foo\"")"Foo"))
 (assert(equal(read1 "\"\"")""))
 (assert(equal(read1 "\"\\\"APL\\\\360?\\\" he cried.\"")"\"APL\\360?\" he cried."))
@@ -67,4 +67,7 @@ do(lex)))
 ;comma
 (assert(equal(read1 ",a")(list +comma+ 'a)))
 (assert(equal(read1 ",@a")(list +comma-at+ 'a)))
-;sharpsign
+;sharpsign Backslash
+(assert(equal(read1 "#\\newline")#\newline))
+(assert(equal(read1 "#\\a")#\a))
+(assert(equal(read1 "#\\'")#\'))

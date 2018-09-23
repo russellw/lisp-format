@@ -123,6 +123,17 @@
           )
 )
 
+(defun token()
+                (coerce
+                    (loop
+                      while(member(syntax-type(peek-char nil *standard-input* nil))
+                                  (list 'constituent 'single-escape 'multiple-escape 'non-terminating-macro-char))
+                      append(multiple-escape)
+                    )
+                  'string
+                )
+)
+
 ;http://www.lispworks.com/documentation/lw50/CLHS/Body/02_.htm
 (defun lex()
 (setf *tok*
@@ -132,14 +143,7 @@
 
     ;number or symbol
     ((member(syntax-type(peek-char))(list 'constituent 'single-escape 'multiple-escape))
-                (coerce
-                    (loop
-                      while(member(syntax-type(peek-char nil *standard-input* nil))
-                                  (list 'constituent 'single-escape 'multiple-escape 'non-terminating-macro-char))
-                      append(multiple-escape)
-                    )
-                  'string
-                )
+      (token)
     )
 
     ;semicolon
@@ -177,6 +181,15 @@
     (cond
       ((not(peek-char nil *standard-input* nil))
         (err "unexpected end of file"))
+
+      ;Sharpsign Backslash
+      ((eql(peek-char)(elt"\\"0))
+        (read-char)
+        (concatenate 'string"#\\"
+          (if(eq(syntax-type(peek-char nil *standard-input* nil))'constituent)
+            (token)
+            (list(read-char))))
+      )
     )
     )
 
@@ -190,9 +203,12 @@
 ;parser
 
 (defun read*()
+  ;http://www.lispworks.com/documentation/lw50/CLHS/Body/02_d.htm
   (cond
     ((not *tok*)
       (err "unexpected end of file"))
+
+    ;Left-Parenthesis
     ((equal *tok* "(" )
       (lex)
       (prog1
@@ -203,26 +219,38 @@
       (lex)
       )
     )
+
+    ;Right-Parenthesis
     ((equal *tok* ")" )
       (err"unexpected ')'"))
+
+    ;Single-Quote
     ((equal *tok* "'" )
       (lex)
       (list 'quote (read*))
     )
+
+    ;Semicolon
     ((eql(elt *tok* 0)(elt ";" 0))
       (prog1
         (list +line-comment+ *tok*)
         (lex))
     )
+
+    ;Double-Quote
     ((eql(elt *tok* 0)(elt "\"" 0))
       (prog1
         (read-from-string *tok*)
         (lex))
     )
+
+    ;Backquote
     ((equal *tok* "`" )
       (lex)
       (list +backquote+ (read*))
     )
+
+    ;Comma
     ((equal *tok* "," )
       (lex)
       (list +comma+ (read*))
@@ -231,6 +259,44 @@
       (lex)
       (list +comma-at+ (read*))
     )
+
+    ;Sharpsign
+    ;http://www.lispworks.com/documentation/lw50/CLHS/Body/02_dh.htm
+    ((eql(elt *tok* 0)(elt "#" 0))
+      (cond
+
+        ;Sharpsign Backslash
+        ;http://www.lispworks.com/documentation/lw50/CLHS/Body/13_ag.htm
+        ((eql(elt *tok* 1)(elt "\\" 0))
+          (cond
+            ((string-equal *tok*"#\\newline")
+              #\newline)
+            ((string-equal *tok*"#\\space")
+              #\space)
+            ((string-equal *tok*"#\\rubout")
+              #\rubout)
+            ((string-equal *tok*"#\\page")
+              #\page)
+            ((string-equal *tok*"#\\tab")
+              #\tab)
+            ((string-equal *tok*"#\\backspace")
+              #\backspace)
+            ((string-equal *tok*"#\\return")
+              #\return)
+            ((string-equal *tok*"#\\linefeed")
+              #\linefeed)
+            ((>(length *tok*)3)
+              (err "unknown character name"))
+            (t
+              (elt *tok* 2))
+          )
+        )
+
+      )
+    )
+
+    ;number or symbol
+    ;http://www.lispworks.com/documentation/lw50/CLHS/Body/02_c.htm
     (t
       (let ((s *tok*))
         (lex)
