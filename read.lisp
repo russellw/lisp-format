@@ -1,4 +1,6 @@
 (defconstant +line-comment+ (gensym))
+(defconstant +package-marker+ (gensym))
+(defconstant +package-marker-2+ (gensym))
 (defconstant +feature-test+ (gensym))
 (defun err(msg)
   (princ msg)
@@ -162,7 +164,26 @@
     (t
       (let ((s *tok*))
         (lex)
-        (read-from-string s)
+        (cond
+          ((=(length(split-string"::"s))2)
+              (cons +package-marker-2+
+                (loop
+                  for x in (split-string"::"s)
+                  collect(read-from-string x)
+                )
+              )
+          )
+          ((=(length(split-string":"s))2)
+              (cons +package-marker+
+                (loop
+                  for x in (split-string":"s)
+                  collect(read-from-string x)
+                )
+              )
+          )
+          (t
+            (read-from-string s))
+        )
       )
     )
   )
