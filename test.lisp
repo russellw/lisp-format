@@ -1,4 +1,7 @@
-(load "etc")
+(load "main")
+;syntax-type
+(assert(eq(syntax-type #\a) 'constituent))
+(assert(eq(syntax-type nil) nil))
 ;subseqp
 (assert(subseqp "a" "abc" 0))
 (assert(not(subseqp "a" "abc" 1)))
@@ -10,3 +13,11 @@
 (assert(equal(split-string " " "one two three")'("one" "two" "three")))
 (assert(equal(split-string " " " one two three")'("one" "two" "three")))
 (assert(equal(split-string " " "one two three ")'("one" "two" "three")))
+
+;read*
+(defun read1()
+(lex)
+(read*))
+
+(with-input-from-string(*standard-input* "a")
+(assert(equal(read1)'a)))

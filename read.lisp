@@ -53,7 +53,7 @@
       'constituent)
     ((eql c #\/)
       'constituent)
-    ((char<= #\0 c #\9)
+    ((and c(char<= #\0 c #\9))
       'constituent)
     ((eql c #\:)
       'constituent)
@@ -69,7 +69,7 @@
       'constituent)
     ((eql c #\@)
       'constituent)
-    ((char<= #\A c #\Z)
+    ((and c(char<= #\A c #\Z))
       'constituent)
     ((eql c #\[)
       'constituent)
@@ -83,7 +83,7 @@
       'constituent)
     ((eql c (elt "`" 0))
       'terminating-macro-char)
-    ((char<= #\a c #\z)
+    ((and c(char<= #\a c #\z))
       'constituent)
     ((eql c #\{)
       'constituent)
@@ -128,6 +128,18 @@
     ;comment
     ((eql(peek-char)(elt";"0))
     (setf *tok* (read-line))
+    )
+
+    ;string
+    ((eql(peek-char)(elt"\""0))
+      (concatenate 'string
+        (list(read-char))
+        (loop
+          until(eql(peek-char nil *standard-input* nil)(elt"\""0))
+          append(multiple-escape)
+        )
+        (list(read-char))
+      )
     )
 
     ;number or symbol

@@ -17,10 +17,10 @@
           )
         )
         (next-delimiter ()
-          (let((i
+          (let((j
               (search delimiter s :start2 i)))
-             (if i
-              i
+             (if j
+              j
               (length s)))
         )
         (next-word ()
