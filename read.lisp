@@ -189,29 +189,28 @@
     ;http://www.lispworks.com/documentation/lw50/CLHS/Body/02_dh.htm
     ((eql(peek-char)(elt"#"0))
       (read-char)
-      (let((arg(digits)))
-        (concatenate 'string
-          "#"
-          arg
-          (cond
-            ((not(peek-char nil *standard-input* nil))
-              (err "unexpected end of file"))
+      (concatenate 'string
+        "#"
+        (digits)
+        (cond
+          ((not(peek-char nil *standard-input* nil))
+            (err "unexpected end of file"))
 
-            ;Sharpsign Backslash
-            ((eql(peek-char)(elt"\\"0))
-              (read-char)
-              (concatenate 'string
-                "\\"
-                (if(eq(syntax-type(peek-char nil *standard-input* nil))'constituent)
-                  (token)
-                  (list(read-char)))
-              )
+          ;Sharpsign Backslash
+          ((eql(peek-char)(elt"\\"0))
+            (concatenate 'string
+              (list(read-char))
+              (if(eq(syntax-type(peek-char nil *standard-input* nil))'constituent)
+                (token)
+                (list(read-char)))
             )
-
-            ;other
-            (t
-              (list(read-char)))
           )
+
+          ;Sharpsign Asterisk
+
+          ;other
+          (t
+            (list(read-char)))
         )
       )
     )
