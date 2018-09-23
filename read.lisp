@@ -1,4 +1,6 @@
 (defconstant +backquote+ (gensym))
+(defconstant +comma+ (gensym))
+(defconstant +comma-at+ (gensym))
 (defconstant +line-comment+ (gensym))
 (defconstant +package-marker+ (gensym))
 (defconstant +package-marker-2+ (gensym))
@@ -126,12 +128,26 @@
     ((not(peek-char t *standard-input* nil))
       (setf *tok* nil))
 
-    ;comment
+    ;number or symbol
+    ((member(syntax-type(peek-char))(list 'constituent 'single-escape 'multiple-escape))
+      (setf *tok*
+                (coerce
+                    (loop
+                      while(member(syntax-type(peek-char nil *standard-input* nil))
+                                  (list 'constituent 'single-escape 'multiple-escape 'non-terminating-macro-char))
+                      append(multiple-escape)
+                    )
+                  'string
+                )
+      )
+    )
+
+    ;semicolon
     ((eql(peek-char)(elt";"0))
     (setf *tok* (read-line))
     )
 
-    ;string
+    ;double-quote
     ((eql(peek-char)(elt"\""0))
       (setf *tok*
       (concatenate 'string
@@ -145,18 +161,14 @@
       )
     )
 
-    ;number or symbol
-    ((member(syntax-type(peek-char))(list 'constituent 'single-escape 'multiple-escape))
-      (setf *tok*
-                (coerce
-                    (loop
-                      while(member(syntax-type(peek-char nil *standard-input* nil))
-                                  (list 'constituent 'single-escape 'multiple-escape 'non-terminating-macro-char))
-                      append(multiple-escape)
-                    )
-                  'string
-                )
-      )
+    ;comma
+    ((eql(peek-char)(elt","0))
+    (read-char)
+    (setf *tok* ",")
+    (when(eql(peek-char nil *standard-input* nil)(elt"@"0))
+    (read-char)
+    (setf *tok* ",@")
+    )
     )
 
     ;other
@@ -200,6 +212,14 @@
     ((equal *tok* "`" )
       (lex)
       (list +backquote+ (read*))
+    )
+    ((equal *tok* "," )
+      (lex)
+      (list +comma+ (read*))
+    )
+    ((equal *tok* ",@" )
+      (lex)
+      (list +comma-at+ (read*))
     )
     (t
       (let ((s *tok*))

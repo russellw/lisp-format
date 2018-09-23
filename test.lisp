@@ -51,4 +51,6 @@
 ;backquote
 (assert(equal(read1 "`a")(list +backquote+ 'a)))
 ;comma
+(assert(equal(read1 ",a")(list +comma+ 'a)))
+(assert(equal(read1 ",@a")(list +comma-at+ 'a)))
 ;sharpsign
