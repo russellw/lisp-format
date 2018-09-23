@@ -15,9 +15,13 @@
 (assert(equal(split-string " " "one two three ")'("one" "two" "three")))
 
 ;read*
-(defun read1()
+(defun read-from(s)
+(with-input-from-string(*standard-input* s)
 (lex)
-(read*))
+(read*)))
 
-(with-input-from-string(*standard-input* "a")
-(assert(equal(read1)'a)))
+(assert(equal(read-from "123")123))
+(assert(equal(read-from "a")'a))
+(assert(equal(read-from ":abc"):abc))
+(assert(equal(read-from "abc:xyz")(list +package-marker+ 'abc 'xyz)))
+(assert(equal(read-from "abc::xyz")(list +package-marker-2+ 'abc 'xyz)))
