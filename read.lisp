@@ -123,6 +123,7 @@
           )
 )
 
+;http://www.lispworks.com/documentation/lw50/CLHS/Body/02_.htm
 (defun lex()
   (cond
     ((not(peek-char t *standard-input* nil))
@@ -168,6 +169,16 @@
     (when(eql(peek-char nil *standard-input* nil)(elt"@"0))
     (read-char)
     (setf *tok* ",@")
+    )
+    )
+
+;sharpsign
+;http://www.lispworks.com/documentation/lw50/CLHS/Body/02_dh.htm
+    ((eql(peek-char)(elt"#"0))
+    (read-char)
+    (cond
+      ((not(peek-char nil *standard-input* nil))
+        (err "unexpected end of file"))
     )
     )
 
