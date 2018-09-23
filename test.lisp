@@ -73,3 +73,12 @@ do(lex)))
 (assert(equal(read1 "#\\'")#\'))
 ;Sharpsign Single-Quote
 (assert(equal(read1 "#'+")'(function +)))
+        ;Sharpsign Left-Parenthesis
+(assert(equalp(read1 "#(a b c c c c)") #(a b c c c c) ))
+(assert(equalp(read1 "#6(a b c c c c)") #(a b c c c c) ))
+(assert(equalp(read1 "#6(a b c)") #(a b c c c c) ))
+(assert(equalp(read1 "#6(a b c c)") #(a b c c c c) ))
+(assert(equalp(read1 "#(a b c)") #(a b c) ))
+(assert(equalp(read1 "#(2 3 5 7 11 13 17 19 23 29 31 37 41 43 47)") #(2 3 5 7 11 13 17 19 23 29 31 37 41 43 47) ))
+(assert(equalp(read1 "#()") #() ))
+(assert(equalp(read1 "#0()") #() ))

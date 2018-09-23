@@ -286,41 +286,61 @@
     ;Sharpsign
     ;http://www.lispworks.com/documentation/lw50/CLHS/Body/02_dh.htm
     ((eql(elt *tok* 0)(elt "#" 0))
-      (cond
+      (let((arg
+              (when(digit-char-p(elt *tok* 1))
+                (parse-integer *tok* :start 1 :junk-allowed t))))
+        (cond
 
-        ;Sharpsign Backslash
-        ;http://www.lispworks.com/documentation/lw50/CLHS/Body/13_ag.htm
-        ((eql(elt *tok* 1)(elt "\\" 0))
-          (cond
-            ((string-equal *tok*"#\\newline")
-              #\newline)
-            ((string-equal *tok*"#\\space")
-              #\space)
-            ((string-equal *tok*"#\\rubout")
-              #\rubout)
-            ((string-equal *tok*"#\\page")
-              #\page)
-            ((string-equal *tok*"#\\tab")
-              #\tab)
-            ((string-equal *tok*"#\\backspace")
-              #\backspace)
-            ((string-equal *tok*"#\\return")
-              #\return)
-            ((string-equal *tok*"#\\linefeed")
-              #\linefeed)
-            ((>(length *tok*)3)
-              (err "unknown character name"))
-            (t
-              (elt *tok* 2))
+          ;Sharpsign Backslash
+          ;http://www.lispworks.com/documentation/lw50/CLHS/Body/13_ag.htm
+          ((eql(elt *tok* 1)(elt "\\" 0))
+            (cond
+              ((string-equal *tok*"#\\newline")
+                #\newline)
+              ((string-equal *tok*"#\\space")
+                #\space)
+              ((string-equal *tok*"#\\rubout")
+                #\rubout)
+              ((string-equal *tok*"#\\page")
+                #\page)
+              ((string-equal *tok*"#\\tab")
+                #\tab)
+              ((string-equal *tok*"#\\backspace")
+                #\backspace)
+              ((string-equal *tok*"#\\return")
+                #\return)
+              ((string-equal *tok*"#\\linefeed")
+                #\linefeed)
+              ((>(length *tok*)3)
+                (err "unknown character name"))
+              (t
+                (elt *tok* 2))
+            )
           )
-        )
 
-        ;Sharpsign Single-Quote
-        ((equal *tok*"#'")
-          (lex)
-          (list 'function (read*))
-        )
+          ;Sharpsign Single-Quote
+          ((equal *tok*"#'")
+            (lex)
+            (list 'function (read*))
+          )
 
+          ;Sharpsign Left-Parenthesis
+          ((eql(last-elt *tok*)(elt"("0))
+            (lex)
+            (let*(
+                  (s      (loop
+                            until(equal *tok*")")
+                            collect(read*)
+                          )
+                  )
+                  (v(make-array (if arg arg (length s))))
+                )
+                (fill-vector v s)
+                v
+            )
+          )
+
+        )
       )
     )
 

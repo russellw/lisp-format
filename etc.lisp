@@ -39,3 +39,15 @@
     )
   )
 )
+
+(defun last-elt (s) (elt s (1- (length s))))
+
+(defun fill-vector(v s)
+  (when s
+    (dotimes(i(length v))
+      (setf(elt v i)(car s))
+      (when(cdr s)
+        (pop s))
+    )
+  )
+)
