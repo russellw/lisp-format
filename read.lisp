@@ -107,7 +107,7 @@
                                     (list(read-char))))
 
 (defun multiple-escape()
-          (if (eql(peek-char)(elt"\\"0))
+          (if (eql(peek-char)(elt"|"0))
             (append
                         (list(read-char))
                         (loop
@@ -164,7 +164,6 @@
     )
   )
 )
-
 ;parser
 
 (defun read*()

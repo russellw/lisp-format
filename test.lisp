@@ -23,9 +23,12 @@
 
 (assert(equal(read1 "123")123))
 (assert(equal(read1 "a")'a))
+(assert(equal(read1 "\\a")'\a))
+(assert(equal(read1 "|one two three|")'|one two three|))
 (assert(equal(read1 ":abc"):abc))
 (assert(equal(read1 "abc:xyz")(list +package-marker+ 'abc 'xyz)))
 (assert(equal(read1 "abc::xyz")(list +package-marker-2+ 'abc 'xyz)))
 (assert(equal(read1 "\"Foo\"")"Foo"))
 (assert(equal(read1 "\"\"")""))
-(assert(equal(read1 "\"\"APL\\360?\" he cried.\"")"\"APL\\360?\" he cried."))
+(assert(equal(read1 "\"\\\"APL\\\\360?\\\" he cried.\"")"\"APL\\360?\" he cried."))
+(assert(equal(read1 "\"|x| = |-x|\"")"|x| = |-x|"))
