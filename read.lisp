@@ -125,13 +125,13 @@
 
 ;http://www.lispworks.com/documentation/lw50/CLHS/Body/02_.htm
 (defun lex()
+(setf *tok*
   (cond
     ((not(peek-char t *standard-input* nil))
-      (setf *tok* nil))
+     nil)
 
     ;number or symbol
     ((member(syntax-type(peek-char))(list 'constituent 'single-escape 'multiple-escape))
-      (setf *tok*
                 (coerce
                     (loop
                       while(member(syntax-type(peek-char nil *standard-input* nil))
@@ -140,17 +140,15 @@
                     )
                   'string
                 )
-      )
     )
 
     ;semicolon
     ((eql(peek-char)(elt";"0))
-    (setf *tok* (read-line))
+     (read-line)
     )
 
     ;double-quote
     ((eql(peek-char)(elt"\""0))
-      (setf *tok*
       (concatenate 'string
         (list(read-char))
         (loop
@@ -159,16 +157,16 @@
         )
         (list(read-char))
       )
-      )
     )
 
     ;comma
     ((eql(peek-char)(elt","0))
     (read-char)
-    (setf *tok* ",")
-    (when(eql(peek-char nil *standard-input* nil)(elt"@"0))
-    (read-char)
-    (setf *tok* ",@")
+    (if(eql(peek-char nil *standard-input* nil)(elt"@"0))
+      (progn
+        (read-char)
+         ",@")
+      ","
     )
     )
 
@@ -184,9 +182,10 @@
 
     ;other
     (t
-      (setf *tok* (string(read-char)))
+       (string(read-char))
     )
   )
+)
 )
 ;parser
 
