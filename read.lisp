@@ -207,6 +207,12 @@
           )
 
           ;Sharpsign Asterisk
+          ((eql(peek-char)(elt"*"0))
+            (concatenate 'string
+              (list(read-char))
+              (token)
+            )
+          )
 
           ;other
           (t
@@ -337,6 +343,13 @@
                 (fill-vector v s)
                 v
             )
+          )
+
+          ;Sharpsign Asterisk
+          ((eql(last-elt *tok*)(elt"*"0))
+            (prog1
+              (read-from-string *tok*)
+              (lex))
           )
 
         )
