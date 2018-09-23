@@ -51,3 +51,7 @@
     )
   )
 )
+
+(defun elt*(s i)
+  (when(< i(length s))
+    (elt s i)))

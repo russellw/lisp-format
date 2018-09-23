@@ -84,7 +84,6 @@ do(lex)))
 (assert(equalp(read1 "#0()") #() ))
           ;Sharpsign Asterisk
 (assert(equalp(read1 "#*10000") #*10000 ))
-(assert(equalp(read1 "#4*10000") #*10000 ))
-(assert(equalp(read1 "#2*10000") #*10000 ))
+(assert(equalp(read1 "#8*10000") #8*10000 ))
 (assert(equalp(read1 "#*") #*))
 (assert(equalp(read1 "#0*") #*))

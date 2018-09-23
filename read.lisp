@@ -291,14 +291,20 @@
     ;Sharpsign
     ;http://www.lispworks.com/documentation/lw50/CLHS/Body/02_dh.htm
     ((eql(elt *tok* 0)(elt "#" 0))
-      (let((arg
-              (when(digit-char-p(elt *tok* 1))
-                (parse-integer *tok* :start 1 :junk-allowed t))))
+      (let*(
+              (arg(subseq *tok* 1(position-if-not #'digit-char-p *tok* :start 1)))
+              (n
+                (when
+                  (> (length arg) 0)
+                  (parse-integer arg))
+              )
+              (dispatch(elt* *tok* (1+(length arg))))
+           )
         (cond
 
           ;Sharpsign Backslash
           ;http://www.lispworks.com/documentation/lw50/CLHS/Body/13_ag.htm
-          ((eql(elt *tok* 1)(elt "\\" 0))
+          ((eql dispatch(elt "\\" 0))
             (cond
               ((string-equal *tok*"#\\newline")
                 #\newline)
@@ -330,7 +336,7 @@
           )
 
           ;Sharpsign Left-Parenthesis
-          ((eql(last-elt *tok*)(elt"("0))
+          ((eql dispatch(elt"("0))
             (lex)
             (let*(
                   (s      (loop
@@ -338,7 +344,7 @@
                             collect(read*)
                           )
                   )
-                  (v(make-array (if arg arg (length s))))
+                  (v(make-array (if n n (length s))))
                 )
                 (fill-vector v s)
                 v
@@ -346,7 +352,7 @@
           )
 
           ;Sharpsign Asterisk
-          ((eql(last-elt *tok*)(elt"*"0))
+          ((eql dispatch(elt"*"0))
             (prog1
               (read-from-string *tok*)
               (lex))
