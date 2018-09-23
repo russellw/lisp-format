@@ -132,13 +132,15 @@
 
     ;string
     ((eql(peek-char)(elt"\""0))
+      (setf *tok*
       (concatenate 'string
         (list(read-char))
         (loop
           until(eql(peek-char nil *standard-input* nil)(elt"\""0))
-          append(multiple-escape)
+          append(single-escape)
         )
         (list(read-char))
+      )
       )
     )
 
@@ -184,6 +186,9 @@
     ((equal *tok* "'" )
       (lex)
       (list 'quote (read*))
+    )
+    ((eql(elt *tok* 0)(elt "\"" 0))
+      (prog1 (read-from-string *tok*) (lex))
     )
     (t
       (let ((s *tok*))
