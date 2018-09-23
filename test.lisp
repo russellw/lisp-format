@@ -16,6 +16,7 @@
 
 ;read*
 (defun read1(s)
+(format t "~a~%" s)
 (with-input-from-string(*standard-input* s)
 (lex)
 (read*)))
