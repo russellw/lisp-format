@@ -116,3 +116,8 @@ do(lex)))
 (assert(equal(read1 "#3r-21010")   -192 ))
 (assert(equal(read1 "#25R-7H") -192   ))
 (assert(equal(read1 "#xACCEDED")181202413    ))
+;Sharpsign C
+(assert(equal(read1 "#C(3.0s1 2.0s-1)") #C(3.0s1 2.0s-1)   ))
+(assert(equal(read1 "#C(5 -3) ")  #C(5 -3)   ))
+(assert(equal(read1 "#C(5/3 7.0)")    #C(5/3 7.0) ))
+(assert(equal(read1 "#C(0 1)") #C(0 1)   ))
