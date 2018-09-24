@@ -22,9 +22,9 @@ collect *tok*
 do(lex)))
 
 (defun read1(s)
-(when t
-(let((*print-right-margin* 132))
-(format t "~a~50T~a~%" s
+(when nil
+(let((*print-right-margin* 200))
+(format t "~a~99T~a~%" s
 (with-input-from-string(*standard-input* s)
 (lex)
 (read-tokens)
