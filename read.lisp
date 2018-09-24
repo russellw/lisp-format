@@ -380,6 +380,48 @@
             (list +read-eval+ (read*))
           )
 
+          ;Sharpsign B
+          ((eql (char-downcase dispatch)(elt"b"0))
+            (lex)
+            (prog1
+              (read-from-string
+                (concatenate 'string
+                  "#b"
+                  *tok*
+                )
+              )
+              (lex)
+            )
+          )
+
+          ;Sharpsign O
+          ((eql (char-downcase dispatch)(elt"o"0))
+            (lex)
+            (prog1
+              (read-from-string
+                (concatenate 'string
+                  "#o"
+                  *tok*
+                )
+              )
+              (lex)
+            )
+          )
+
+          ;Sharpsign X
+          ((eql (char-downcase dispatch)(elt"x"0))
+            (lex)
+            (prog1
+              (read-from-string
+                (concatenate 'string
+                  "#x"
+                  *tok*
+                )
+              )
+              (lex)
+            )
+          )
+
         )
       )
     )

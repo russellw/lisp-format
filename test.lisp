@@ -94,3 +94,14 @@ do(lex)))
 ;Sharpsign Dot
 (assert(equal(read1 "#.123")(list +read-eval+ 123)))
 (assert(equal(read1 "#.abc")(list +read-eval+ 'abc)))
+;Sharpsign B
+(assert(equal(read1 "#B1101")13))
+(assert(equal(read1 "#b101/11")5/3))
+(assert(equal(read1 "#b 101/11")5/3))
+;Sharpsign O
+(assert(equal(read1 "#o37/15")31/13))
+(assert(equal(read1 "#o777")511))
+(assert(equal(read1 "#o105")69))
+;Sharpsign X
+(assert(equal(read1 "#xF00")3840))
+(assert(equal(read1 "#x105")261))
