@@ -23,10 +23,12 @@ do(lex)))
 
 (defun read1(s)
 (when t
-(format t "~a~40T~a~%" s
+(let((*print-right-margin* 132))
+(format t "~a~50T~a~%" s
 (with-input-from-string(*standard-input* s)
 (lex)
 (read-tokens)
+)
 )
 )
 )
@@ -128,3 +130,7 @@ do(lex)))
 (assert(equal(read1 "#0A foo") (list +array+ 0 'foo   )))
 ;Sharpsign S
 (assert(equal(read1 "#s(name slot1 value1 slot2 value2)") (list +structure+ '(name slot1 value1 slot2 value2)   )))
+;Sharpsign P
+(assert(equal(read1 "#p\"abc\"") #p"abc"))
+;Sharpsign Plus
+(assert(equal(read1 "(cons #+spice \"Spice\" #-spice \"Lispm\" x)") `(cons (,+feature-plus+ spice "Spice") (,+feature-minus+ spice "Lispm") x)))

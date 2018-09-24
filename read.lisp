@@ -7,7 +7,8 @@
 (defconstant +line-comment+ (gensym))
 (defconstant +package-marker+ (gensym))
 (defconstant +package-marker-2+ (gensym))
-(defconstant +feature-test+ (gensym))
+(defconstant +feature-plus+ (gensym))
+(defconstant +feature-minus+ (gensym))
 (defun err(msg)
   (princ msg)
   (quit))
@@ -459,11 +460,38 @@
             (list +array+ n(read*))
           )
 
-
           ;Sharpsign S
           ((eql (char-downcase dispatch)(elt"s"0))
             (lex)
             (list +structure+ (read*))
+          )
+
+          ;Sharpsign P
+          ((eql (char-downcase dispatch)(elt"p"0))
+            (lex)
+            (parse-namestring(read*))
+          )
+
+          ;Sharpsign Equal-Sign
+          ((eql dispatch(elt"="0))
+            (err"not supported")
+          )
+
+          ;Sharpsign Sharpsign
+          ((eql dispatch(elt"#"0))
+            (err"not supported")
+          )
+
+          ;Sharpsign Plus
+          ((eql dispatch(elt"+"0))
+            (lex)
+            (list +feature-plus+(read*)(read*))
+          )
+
+          ;Sharpsign Minus
+          ((eql dispatch(elt"-"0))
+            (lex)
+            (list +feature-minus+(read*)(read*))
           )
 
         )
@@ -506,19 +534,3 @@
     collect (read*)
   )
 )
-
-(defun line-comment-reader (*standard-input* c)
-  (list +line-comment+ (concatenate 'string (string c) (read-line *standard-input* nil #\Newline t))))
-
-(defun feature-test-reader (*standard-input* c x)
-  (declare (ignore c x))
-  (list +feature-test+ (read *standard-input* t nil t) (read *standard-input* t nil t)))
-
-(defun read-file (file)
-  (with-open-file (*standard-input* file)
-    ;(set-macro-character (elt ";" 0) #'line-comment-reader)
-    ;(set-dispatch-macro-character #\# #\+ #'feature-test-reader)
-    (loop
-      for x = (read *standard-input* nil *standard-input*)
-      until (eq x *standard-input*)
-      collect x)))

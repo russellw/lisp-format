@@ -97,7 +97,7 @@
      (next-line))
 
     ;reader macros
-    ((eq (car a) +feature-test+)
+    ((eq (car a) +feature-plus+)
      (next-line)
      (pp-string "#+")
      (pp (cadr a))
@@ -187,7 +187,7 @@
      t)
 
     ;reader macros
-    ((eq (car a) +feature-test+)
+    ((eq (car a) +feature-plus+)
      t)
 
     ;special forms
