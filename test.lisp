@@ -152,7 +152,7 @@ do(lex)))
 
 (assert(equal(read1
 "(defun mention-fun-fact-2a () (format t \"Don't use |\\# unmatched or you'll get in trouble!\"))")
-`(defun mention-fun-fact-2a () (format t "Don't use |\\# unmatched or you'll get in trouble!"))
+`(defun mention-fun-fact-2a () (format t "Don't use |# unmatched or you'll get in trouble!"))
 ))
 
 (assert(equal(read1
