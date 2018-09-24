@@ -158,7 +158,7 @@
       collect c
       until (and(eql c (elt"|"0))(eql(peek-char)(elt"#"0)))
       if (and(eql c (elt"#"0))(eql(peek-char)(elt"|"0)))
-        append(concatenate 'string (list(read-char)) (block-comment))
+        append(concatenate 'list (list(read-char)) (block-comment))
       do
       (setf c(read-char))
     )
