@@ -5,6 +5,7 @@
 (defconstant +comma+ (gensym))
 (defconstant +comma-at+ (gensym))
 (defconstant +line-comment+ (gensym))
+(defconstant +block-comment+ (gensym))
 (defconstant +package-marker+ (gensym))
 (defconstant +package-marker-2+ (gensym))
 (defconstant +feature-plus+ (gensym))
@@ -226,6 +227,21 @@
             )
           )
 
+          ;Sharpsign Vertical-Bar
+          ((eql(peek-char)(elt"|"0))
+            (concatenate 'string
+              (list(read-char)(read-char))
+              (loop
+                with c = (read-char)
+                collect c
+                until (and(eql c (elt"|"0))(eql(peek-char)(elt"#"0)))
+                do
+                (setf c(read-char))
+              )
+              (list(read-char))
+            )
+          )
+
           ;other
           (t
             (list(read-char)))
@@ -241,7 +257,6 @@
 )
 )
 ;parser
-
 (defun read*()
   ;http://www.lispworks.com/documentation/lw50/CLHS/Body/02_d.htm
   (cond
@@ -472,16 +487,6 @@
             (parse-namestring(read*))
           )
 
-          ;Sharpsign Equal-Sign
-          ((eql dispatch(elt"="0))
-            (err"not supported")
-          )
-
-          ;Sharpsign Sharpsign
-          ((eql dispatch(elt"#"0))
-            (err"not supported")
-          )
-
           ;Sharpsign Plus
           ((eql dispatch(elt"+"0))
             (lex)
@@ -492,6 +497,18 @@
           ((eql dispatch(elt"-"0))
             (lex)
             (list +feature-minus+(read*)(read*))
+          )
+
+          ;Sharpsign Vertical-Bar
+          ((eql dispatch(elt"|"0))
+            (prog1
+              (list +block-comment+ *tok*)
+              (lex))
+          )
+
+          ;other
+          (t
+            (err(format nil"~a not supported"*tok*))
           )
 
         )

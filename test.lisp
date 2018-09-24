@@ -134,3 +134,28 @@ do(lex)))
 (assert(equal(read1 "#p\"abc\"") #p"abc"))
 ;Sharpsign Plus
 (assert(equal(read1 "(cons #+spice \"Spice\" #-spice \"Lispm\" x)") `(cons (,+feature-plus+ spice "Spice") (,+feature-minus+ spice "Lispm") x)))
+;Sharpsign Vertical-Bar
+(assert(equal(read1
+                   "(defun add3 (n) #|(format t \"~&Adding 3 to ~D.\" n)|# (+ n 3))")
+`(defun add3 (n) (,+block-comment+ "#|(format t \"~&Adding 3 to ~D.\" n)|#") (+ n 3))
+))
+
+(assert(equal(read1
+"(defun mention-fun-fact-1a () (format t \"CL uses ; and #|...|# in comments.\"))")
+`(defun mention-fun-fact-1a () (format t "CL uses ; and #|...|# in comments."))
+))
+
+(assert(equal(read1
+"#|(defun mention-fun-fact-1b () (format t \"CL uses ; and #|...|# in comments.\"))|#")
+`(,+block-comment+ "#|(defun mention-fun-fact-1b () (format t \"CL uses ; and #|...|# in comments.\"))|#")
+))
+
+(assert(equal(read1
+"(defun mention-fun-fact-2a () (format t \"Don't use |\\# unmatched or you'll get in trouble!\"))")
+`(defun mention-fun-fact-2a () (format t "Don't use |\\# unmatched or you'll get in trouble!"))
+))
+
+(assert(equal(read1
+"#|(defun mention-fun-fact-2b () (format t \"Don't use |\\# unmatched or you'll get in trouble!\"))|#")
+`(,+block-comment+ "#|(defun mention-fun-fact-2b () (format t \"Don't use |\\# unmatched or you'll get in trouble!\"))|#")
+))
