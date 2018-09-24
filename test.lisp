@@ -121,3 +121,10 @@ do(lex)))
 (assert(equal(read1 "#C(5 -3) ")  #C(5 -3)   ))
 (assert(equal(read1 "#C(5/3 7.0)")    #C(5/3 7.0) ))
 (assert(equal(read1 "#C(0 1)") #C(0 1)   ))
+;Sharpsign A
+(assert(equal(read1 "#2A((0 1 5) (foo 2 (hot dog)))") (list +array+ 2 '((0 1 5) (foo 2 (hot dog)))   )))
+(assert(equal(read1 "#1A((0 1 5) (foo 2 (hot dog)))") (list +array+ 1 '((0 1 5) (foo 2 (hot dog)))   )))
+(assert(equal(read1 "#0A((0 1 5) (foo 2 (hot dog)))") (list +array+ 0 '((0 1 5) (foo 2 (hot dog)))   )))
+(assert(equal(read1 "#0A foo") (list +array+ 0 'foo   )))
+;Sharpsign S
+(assert(equal(read1 "#s(name slot1 value1 slot2 value2)") (list +structure+ '(name slot1 value1 slot2 value2)   )))

@@ -1,4 +1,6 @@
 (defconstant +backquote+ (gensym))
+(defconstant +array+ (gensym))
+(defconstant +structure+ (gensym))
 (defconstant +read-eval+ (gensym))
 (defconstant +comma+ (gensym))
 (defconstant +comma-at+ (gensym))
@@ -449,6 +451,19 @@
               )
               (lex)
             )
+          )
+
+          ;Sharpsign A
+          ((eql (char-downcase dispatch)(elt"a"0))
+            (lex)
+            (list +array+ n(read*))
+          )
+
+
+          ;Sharpsign S
+          ((eql (char-downcase dispatch)(elt"s"0))
+            (lex)
+            (list +structure+ (read*))
           )
 
         )
