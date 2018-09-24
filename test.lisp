@@ -89,3 +89,5 @@ do(lex)))
 (assert(equalp(read1 "#6*101111") #*101111 ))
 (assert(equalp(read1 "#6*101") #*101111 ))
 (assert(equalp(read1 "#6*1011") #*101111 ))
+;Sharpsign Colon
+(assert(symbolp(read1 "#:abc") ))

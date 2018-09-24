@@ -214,6 +214,14 @@
             )
           )
 
+          ;Sharpsign Colon
+          ((eql(peek-char)(elt":"0))
+            (concatenate 'string
+              (list(read-char))
+              (token)
+            )
+          )
+
           ;other
           (t
             (list(read-char)))
@@ -353,6 +361,13 @@
 
           ;Sharpsign Asterisk
           ((eql dispatch(elt"*"0))
+            (prog1
+              (read-from-string *tok*)
+              (lex))
+          )
+
+          ;Sharpsign Colon
+          ((eql dispatch(elt":"0))
             (prog1
               (read-from-string *tok*)
               (lex))
