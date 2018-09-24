@@ -150,6 +150,22 @@
                 )
 )
 
+(defun block-comment()
+  (concatenate 'string
+    (list(read-char))
+    (loop
+      with c = (read-char)
+      collect c
+      until (and(eql c (elt"|"0))(eql(peek-char)(elt"#"0)))
+      if (and(eql c (elt"#"0))(eql(peek-char)(elt"|"0)))
+        append(concatenate 'string (list(read-char)) (block-comment))
+      do
+      (setf c(read-char))
+    )
+    (list(read-char))
+  )
+)
+
 ;http://www.lispworks.com/documentation/lw50/CLHS/Body/02_.htm
 (defun lex()
 (setf *tok*
@@ -173,6 +189,9 @@
         (list(read-char))
         (loop
           until(eql(peek-char nil *standard-input* nil)(elt"\""0))
+          unless(peek-char nil *standard-input* nil)
+            do
+            (err"\" unmatched")
           append(single-escape)
         )
         (list(read-char))
@@ -229,17 +248,7 @@
 
           ;Sharpsign Vertical-Bar
           ((eql(peek-char)(elt"|"0))
-            (concatenate 'string
-              (list(read-char)(read-char))
-              (loop
-                with c = (read-char)
-                collect c
-                until (and(eql c (elt"|"0))(eql(peek-char)(elt"#"0)))
-                do
-                (setf c(read-char))
-              )
-              (list(read-char))
-            )
+            (block-comment)
           )
 
           ;other
