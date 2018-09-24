@@ -422,6 +422,22 @@
             )
           )
 
+          ;Sharpsign R
+          ((eql (char-downcase dispatch)(elt"r"0))
+            (lex)
+            (prog1
+              (read-from-string
+                (concatenate 'string
+                  "#"
+                  arg
+                  "r"
+                  *tok*
+                )
+              )
+              (lex)
+            )
+          )
+
         )
       )
     )
