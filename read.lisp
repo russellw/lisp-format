@@ -1,4 +1,5 @@
 (defconstant +backquote+ (gensym))
+(defconstant +read-eval+ (gensym))
 (defconstant +comma+ (gensym))
 (defconstant +comma-at+ (gensym))
 (defconstant +line-comment+ (gensym))
@@ -371,6 +372,12 @@
             (prog1
               (read-from-string *tok*)
               (lex))
+          )
+
+          ;Sharpsign Dot
+          ((equal *tok*"#.")
+            (lex)
+            (list +read-eval+ (read*))
           )
 
         )
