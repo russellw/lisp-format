@@ -247,25 +247,23 @@
 )
 
 (defun fmt-inline(a)
-  (cond
+  (acond
     ((atom* a)
       (fmt-atom a))
     ((special-prefix a)
-      (let((p(special-prefix a)))
-       (concatenate 'string p(fmt-inline(cadr a)))))
+       (concatenate 'string it(fmt-inline(cadr a))))
     (t
-      (format nil "(~{~A~^ ~})" (mapcar #'fmt-inline a)))
+      (format nil "(~{~a~^ ~})" (mapcar #'fmt-inline a)))
   )
 )
 
 (defun fmt(col a)
-  (cond
+  (acond
     ((atom* a)
       (fmt-atom a)
     )
     ((special-prefix a)
-      (let((p(special-prefix a)))
-       (concatenate 'string p(fmt(+ col(length p))(cadr a)))))
+       (concatenate 'string it(fmt(+ col(length it))(cadr a))))
     (t
       (fmt-inline a)
     )

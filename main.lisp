@@ -1,6 +1,8 @@
 ;boilerplate
 #+sbcl (declaim (muffle-conditions style-warning))
 
+;macros
+(load "macros")
 
 ;modules
 (load "etc")
