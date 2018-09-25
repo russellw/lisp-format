@@ -234,6 +234,9 @@
     ((eq(car a)'quote)
       "'"
     )
+    ((eq(car a)'function)
+      "#'"
+    )
     ((eq(car a)+backquote+)
       "`"
     )
