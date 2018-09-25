@@ -185,6 +185,11 @@ do(lex)))
 (read-write"#.(foo bar)")
 (read-write"#+sbcl (foo bar)")
 (read-write"#-sbcl (foo bar)")
+(read-write"; text")
+(read-write";; text")
+(read-write";;; text")
+(read-write";;;; text")
+(read-write"#| text |#")
 
 ;write then read
 (defun write-read (a) (assert (equal (read-string (fmt 0 a)) a)))

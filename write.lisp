@@ -249,21 +249,20 @@
   )
 )
 
-(defun atom*(a)
-  (cond
-    ((atom a)t)
-  )
-)
-
 (defun fmt-atom(a)
-  (let((*print-case* :downcase))
-    (format nil "~s" a))
+  (cond
+    ((atom a)
+      (let((*print-case* :downcase))
+        (prin1-to-string a)))
+    ((eq(car  a)+comment+)
+      (cadr a))
+  )
 )
 
 (defun fmt-inline(a)
   (acond
-    ((atom* a)
-      (fmt-atom a))
+    ((fmt-atom a)
+      it)
     ((special-prefix a)
        (concatenate 'string it(fmt-inline(cadr a))))
     ((feature-expression a)
@@ -275,9 +274,8 @@
 
 (defun fmt(col a)
   (acond
-    ((atom* a)
-      (fmt-atom a)
-    )
+    ((fmt-atom a)
+      it)
     ((special-prefix a)
        (concatenate 'string it(fmt(+ col(length it))(cadr a))))
     ((feature-expression a)
