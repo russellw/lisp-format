@@ -1,14 +1,17 @@
 (defconstant +backquote+ (gensym))
-(defconstant +array+ (gensym))
-(defconstant +structure+ (gensym))
-(defconstant +read-eval+ (gensym))
 (defconstant +comma+ (gensym))
 (defconstant +comma-at+ (gensym))
+(defconstant +read-eval+ (gensym))
+
+(defconstant +feature-plus+ (gensym))
+(defconstant +feature-minus+ (gensym))
+
+(defconstant +array+ (gensym))
+(defconstant +structure+ (gensym))
 (defconstant +comment+ (gensym))
 (defconstant +package-marker+ (gensym))
 (defconstant +package-marker-2+ (gensym))
-(defconstant +feature-plus+ (gensym))
-(defconstant +feature-minus+ (gensym))
+
 (defun err(msg)
   (princ msg)
   (quit))
