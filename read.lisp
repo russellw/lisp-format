@@ -4,8 +4,7 @@
 (defconstant +read-eval+ (gensym))
 (defconstant +comma+ (gensym))
 (defconstant +comma-at+ (gensym))
-(defconstant +line-comment+ (gensym))
-(defconstant +block-comment+ (gensym))
+(defconstant +comment+ (gensym))
 (defconstant +package-marker+ (gensym))
 (defconstant +package-marker-2+ (gensym))
 (defconstant +feature-plus+ (gensym))
@@ -150,7 +149,7 @@
                 )
 )
 
-(defun block-comment()
+(defun comment()
   (concatenate 'string
     (list(read-char))
     (loop
@@ -158,7 +157,7 @@
       collect c
       until (and(eql c (elt"|"0))(eql(peek-char)(elt"#"0)))
       if (and(eql c (elt"#"0))(eql(peek-char)(elt"|"0)))
-        append(concatenate 'list (list(read-char)) (block-comment))
+        append(concatenate 'list (list(read-char)) (comment))
       do
       (setf c(read-char))
     )
@@ -248,7 +247,7 @@
 
           ;Sharpsign Vertical-Bar
           ((eql(peek-char)(elt"|"0))
-            (block-comment)
+            (comment)
           )
 
           ;other
@@ -297,7 +296,7 @@
     ;Semicolon
     ((eql(elt *tok* 0)(elt ";" 0))
       (prog1
-        (list +line-comment+ *tok*)
+        (list +comment+ *tok*)
         (lex))
     )
 
@@ -511,7 +510,7 @@
           ;Sharpsign Vertical-Bar
           ((eql dispatch(elt"|"0))
             (prog1
-              (list +block-comment+ *tok*)
+              (list +comment+ *tok*)
               (lex))
           )
 

@@ -58,7 +58,7 @@ do(lex)))
 ;Single-Quote
 (assert(equal(read1 "'a")' 'a))
 ;semicolon
-(assert(equal(read1 "; comment")(list +line-comment+ "; comment")))
+(assert(equal(read1 "; comment")(list +comment+ "; comment")))
 ;Double-Quote
 (assert(equal(read1 "\"Foo\"")"Foo"))
 (assert(equal(read1 "\"\"")""))
@@ -137,7 +137,7 @@ do(lex)))
 ;Sharpsign Vertical-Bar
 (assert(equal(read1
                    "(defun add3 (n) #|(format t \"~&Adding 3 to ~D.\" n)|# (+ n 3))")
-`(defun add3 (n) (,+block-comment+ "#|(format t \"~&Adding 3 to ~D.\" n)|#") (+ n 3))
+`(defun add3 (n) (,+comment+ "#|(format t \"~&Adding 3 to ~D.\" n)|#") (+ n 3))
 ))
 
 (assert(equal(read1
@@ -147,7 +147,7 @@ do(lex)))
 
 (assert(equal(read1
 "#|(defun mention-fun-fact-1b () (format t \"CL uses ; and #|...|# in comments.\"))|#")
-`(,+block-comment+ "#|(defun mention-fun-fact-1b () (format t \"CL uses ; and #|...|# in comments.\"))|#")
+`(,+comment+ "#|(defun mention-fun-fact-1b () (format t \"CL uses ; and #|...|# in comments.\"))|#")
 ))
 
 (assert(equal(read1
@@ -157,7 +157,7 @@ do(lex)))
 
 (assert(equal(read1
 "#|(defun mention-fun-fact-2b () (format t \"Don't use |\\# unmatched or you'll get in trouble!\"))|#")
-`(,+block-comment+ "#|(defun mention-fun-fact-2b () (format t \"Don't use |\\# unmatched or you'll get in trouble!\"))|#")
+`(,+comment+ "#|(defun mention-fun-fact-2b () (format t \"Don't use |\\# unmatched or you'll get in trouble!\"))|#")
 ))
 
 ;write
