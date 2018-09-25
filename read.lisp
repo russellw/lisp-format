@@ -149,7 +149,7 @@
                 )
 )
 
-(defun comment()
+(defun block-comment()
   (concatenate 'string
     (list(read-char))
     (loop
@@ -157,7 +157,7 @@
       collect c
       until (and(eql c (elt"|"0))(eql(peek-char)(elt"#"0)))
       if (and(eql c (elt"#"0))(eql(peek-char)(elt"|"0)))
-        append(concatenate 'list (list(read-char)) (comment))
+        append(concatenate 'list (list(read-char)) (block-comment))
       do
       (setf c(read-char))
     )
@@ -247,7 +247,7 @@
 
           ;Sharpsign Vertical-Bar
           ((eql(peek-char)(elt"|"0))
-            (comment)
+            (block-comment)
           )
 
           ;other
