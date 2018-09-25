@@ -368,7 +368,7 @@
           ;Sharpsign Single-Quote
           ((equal *tok*"#'")
             (lex)
-            (list 'function (read*))
+            `(function ,(read*))
           )
 
           ;Sharpsign Left-Parenthesis
