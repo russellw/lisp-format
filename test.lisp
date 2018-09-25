@@ -58,7 +58,7 @@ do(lex)))
 ;Single-Quote
 (assert(equal(read-string "'a")' 'a))
 ;semicolon
-(assert(equal(read-string "; comment")(list +comment+ "; comment")))
+(assert(equal(read-string "; comment")(list +atom+ "; comment")))
 ;Double-Quote
 (assert(equal(read-string "\"Foo\"")"Foo"))
 (assert(equal(read-string "\"\"")""))
@@ -84,45 +84,11 @@ do(lex)))
 (assert(equalp(read-string "#(2 3 5 7 11 13 17 19)") #(2 3 5 7 11 13 17 19 ) ))
 (assert(equalp(read-string "#()") #() ))
 (assert(equalp(read-string "#0()") #() ))
-          ;Sharpsign Asterisk
-(assert(equalp(read-string "#*") #*))
-(assert(equalp(read-string "#0*") #*))
-(assert(equalp(read-string "#*101111") #*101111 ))
-(assert(equalp(read-string "#6*101111") #*101111 ))
-(assert(equalp(read-string "#6*101") #*101111 ))
-(assert(equalp(read-string "#6*1011") #*101111 ))
 ;Sharpsign Colon
 (assert(symbolp(read-string "#:abc") ))
 ;Sharpsign Dot
 (assert(equal(read-string "#.123")(list +read-eval+ 123)))
 (assert(equal(read-string "#.abc")(list +read-eval+ 'abc)))
-;Sharpsign B
-(assert(equal(read-string "#B1101")13))
-(assert(equal(read-string "#b101/11")5/3))
-(assert(equal(read-string "#b 101/11")5/3))
-;Sharpsign O
-(assert(equal(read-string "#o37/15")31/13))
-(assert(equal(read-string "#o777")511))
-(assert(equal(read-string "#o105")69))
-;Sharpsign X
-(assert(equal(read-string "#xF00")3840))
-(assert(equal(read-string "#x105")261))
-;Sharpsign R
-(assert(equal(read-string "#2r11010101") 213   ))
-(assert(equal(read-string "#b11010101")   213 ))
-(assert(equal(read-string "#b+11010101")   213 ))
-(assert(equal(read-string "#o325")   213 ))
-(assert(equal(read-string "#xD5")   213 ))
-(assert(equal(read-string "#16r+D5")   213 ))
-(assert(equal(read-string "#o-300")    -192))
-(assert(equal(read-string "#3r-21010")   -192 ))
-(assert(equal(read-string "#25R-7H") -192   ))
-(assert(equal(read-string "#xACCEDED")181202413    ))
-;Sharpsign C
-(assert(equal(read-string "#C(3.0s1 2.0s-1)") #C(3.0s1 2.0s-1)   ))
-(assert(equal(read-string "#C(5 -3) ")  #C(5 -3)   ))
-(assert(equal(read-string "#C(5/3 7.0)")    #C(5/3 7.0) ))
-(assert(equal(read-string "#C(0 1)") #C(0 1)   ))
 ;Sharpsign A
 (assert(equal(read-string "#2A((0 1 5) (foo 2 (hot dog)))") (list +array+ 2 '((0 1 5) (foo 2 (hot dog)))   )))
 (assert(equal(read-string "#1A((0 1 5) (foo 2 (hot dog)))") (list +array+ 1 '((0 1 5) (foo 2 (hot dog)))   )))
@@ -137,7 +103,7 @@ do(lex)))
 ;Sharpsign Vertical-Bar
 (assert(equal(read-string
                    "(defun add3 (n) #|(format t \"~&Adding 3 to ~D.\" n)|# (+ n 3))")
-`(defun add3 (n) (,+comment+ "#|(format t \"~&Adding 3 to ~D.\" n)|#") (+ n 3))
+`(defun add3 (n) (,+atom+ "#|(format t \"~&Adding 3 to ~D.\" n)|#") (+ n 3))
 ))
 
 (assert(equal(read-string
@@ -147,7 +113,7 @@ do(lex)))
 
 (assert(equal(read-string
 "#|(defun mention-fun-fact-1b () (format t \"CL uses ; and #|...|# in comments.\"))|#")
-`(,+comment+ "#|(defun mention-fun-fact-1b () (format t \"CL uses ; and #|...|# in comments.\"))|#")
+`(,+atom+ "#|(defun mention-fun-fact-1b () (format t \"CL uses ; and #|...|# in comments.\"))|#")
 ))
 
 (assert(equal(read-string
@@ -157,7 +123,7 @@ do(lex)))
 
 (assert(equal(read-string
 "#|(defun mention-fun-fact-2b () (format t \"Don't use |\\# unmatched or you'll get in trouble!\"))|#")
-`(,+comment+ "#|(defun mention-fun-fact-2b () (format t \"Don't use |\\# unmatched or you'll get in trouble!\"))|#")
+`(,+atom+ "#|(defun mention-fun-fact-2b () (format t \"Don't use |\\# unmatched or you'll get in trouble!\"))|#")
 ))
 ;fmt
 (assert(equal(fmt-inline 'abc)"abc"))
@@ -192,6 +158,14 @@ do(lex)))
 (read-write";;;; text")
 (read-write"#| text |#")
 (read-write"\"abc\"")
+(read-write"#b100")
+(read-write"#o100")
+(read-write"#x100")
+(read-write"#26r100")
+(read-write"#c(0 1)")
+(read-write"#P\"abc\"")
+(read-write"#*1111")
+(read-write"#:abc")
 
 ;write then read
 (defun write-read (a) (assert (equal (read-string (fmt 0 a)) a)))

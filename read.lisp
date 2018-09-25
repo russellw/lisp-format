@@ -1,3 +1,5 @@
+(defconstant +atom+ (gensym))
+
 (defconstant +backquote+ (gensym))
 (defconstant +comma+ (gensym))
 (defconstant +comma-at+ (gensym))
@@ -8,7 +10,6 @@
 
 (defconstant +array+ (gensym))
 (defconstant +structure+ (gensym))
-(defconstant +comment+ (gensym))
 (defconstant +package-marker+ (gensym))
 (defconstant +package-marker-2+ (gensym))
 
@@ -299,7 +300,7 @@
     ;Semicolon
     ((eql(elt *tok* 0)(elt ";" 0))
       (prog1
-        (list +comment+ *tok*)
+        (list +atom+ *tok*)
         (lex))
     )
 
@@ -392,7 +393,9 @@
           ;Sharpsign Asterisk
           ((eql dispatch(elt"*"0))
             (prog1
-              (read-from-string *tok*)
+              (list
+                +atom+
+                *tok*)
               (lex))
           )
 
@@ -412,7 +415,8 @@
           ;Sharpsign B
           ((eql (char-downcase dispatch)(elt"b"0))
             (prog1
-              (read-from-string
+              (list
+                +atom+
                 (concatenate 'string
                   "#b"
                   (lex)
@@ -425,7 +429,8 @@
           ;Sharpsign O
           ((eql (char-downcase dispatch)(elt"o"0))
             (prog1
-              (read-from-string
+              (list
+                +atom+
                 (concatenate 'string
                   "#o"
                   (lex)
@@ -438,7 +443,8 @@
           ;Sharpsign X
           ((eql (char-downcase dispatch)(elt"x"0))
             (prog1
-              (read-from-string
+              (list
+                +atom+
                 (concatenate 'string
                   "#x"
                   (lex)
@@ -451,7 +457,8 @@
           ;Sharpsign R
           ((eql (char-downcase dispatch)(elt"r"0))
             (prog1
-              (read-from-string
+              (list
+                +atom+
                 (concatenate 'string
                   "#"
                   arg
@@ -466,7 +473,8 @@
           ;Sharpsign C
           ((eql (char-downcase dispatch)(elt"c"0))
             (prog1
-              (read-from-string
+              (list
+                +atom+
                 (concatenate 'string
                   "#c"
                   (lex)
@@ -513,7 +521,7 @@
           ;Sharpsign Vertical-Bar
           ((eql dispatch(elt"|"0))
             (prog1
-              (list +comment+ *tok*)
+              (list +atom+ *tok*)
               (lex))
           )
 

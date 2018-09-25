@@ -91,7 +91,7 @@
      (pp-write a))
 
     ;comment
-    ((eq (car a) +comment+)
+    ((eq (car a) +atom+)
      (blank-line)
      (pp-string (cadr a))
      (next-line))
@@ -118,7 +118,7 @@
      (let ((*indent* (+ *indent* 2)))
        (dolist (b a)
          (cond
-           ((eq (car b) +comment+)
+           ((eq (car b) +atom+)
             (blank-line)
             (pp-string (cadr b))
             (next-line))
@@ -183,7 +183,7 @@
      nil)
 
     ;comment
-    ((eq (car a) +comment+)
+    ((eq (car a) +atom+)
      t)
 
     ;reader macros
@@ -257,7 +257,7 @@
     ((atom a)
       (let((*print-case* :downcase))
         (prin1-to-string a)))
-    ((eq(car  a)+comment+)
+    ((eq(car  a)+atom+)
       (cadr a))
   )
 )
