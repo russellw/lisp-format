@@ -216,10 +216,52 @@
       (terpri))))
 
 
+
+(defun atom*(a)
+  (cond
+    ((atom a)t)
+  )
+)
+
 (defun fmt-atom(a)
-  (format nil "~s" a)
+  (let((*print-case* :downcase))
+    (format nil "~s" a))
+)
+
+(defun fmt-inline(a)
+  (if(atom* a)
+    (fmt-atom a)
+    (format nil "(~{~A~^ ~})" (mapcar #'fmt-inline a)))
+)
+
+(defun fmt-backquote(col a)
+   (format nil "`~A"(fmt(1+ col)(cadr a)))
+)
+
+(defun fmt-comma(col a)
+   (format nil ",~A"(fmt(1+ col)(cadr a)))
+)
+
+(defun fmt-comma-at(col a)
+   (format nil ",@~A"(fmt(+ 2 col)(cadr a)))
 )
 
 (defun fmt(col a)
-  (fmt-atom a)
+  (cond
+    ((atom* a)
+      (fmt-atom a)
+    )
+    ((eq(car a)+backquote+)
+      (fmt-backquote col a)
+    )
+    ((eq(car a)+comma+)
+      (fmt-comma col a)
+    )
+    ((eq(car a)+comma-at+)
+      (fmt-comma-at col a)
+    )
+    (t
+      (fmt-inline a)
+    )
+  )
 )
