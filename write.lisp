@@ -214,3 +214,12 @@
     (let ((*print-case* :downcase))
       (pp-lines s)
       (terpri))))
+
+
+(defun fmt-atom(a)
+  (format nil "~s" a)
+)
+
+(defun fmt(col a)
+  (fmt-atom a)
+)

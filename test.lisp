@@ -14,7 +14,7 @@
 (assert(equal(split-string " " " one two three")'("one" "two" "three")))
 (assert(equal(split-string " " "one two three ")'("one" "two" "three")))
 
-;read*
+;read
 (defun read-tokens()
 (loop
 while *tok*
@@ -159,3 +159,17 @@ do(lex)))
 "#|(defun mention-fun-fact-2b () (format t \"Don't use |\\# unmatched or you'll get in trouble!\"))|#")
 `(,+block-comment+ "#|(defun mention-fun-fact-2b () (format t \"Don't use |\\# unmatched or you'll get in trouble!\"))|#")
 ))
+
+;write
+(defun write1(a)
+  (assert(equal(read1(fmt 0 a))a)))
+
+(write1'abc)
+(write1 123)
+(write1 +123)
+(write1 -123)
+(write1 123/456)
+(write1 "abc")
+(write1 "abc\\def")
+(write1 #\a)
+(write1 '(foo bar))
