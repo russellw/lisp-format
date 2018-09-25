@@ -291,7 +291,7 @@
     ;Single-Quote
     ((equal *tok* "'" )
       (lex)
-      (list 'quote (read*))
+      `(quote ,(read*))
     )
 
     ;Semicolon
