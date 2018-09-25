@@ -217,6 +217,24 @@
 
 
 
+
+(defun special-prefix(a)
+  (cond
+    ((eq(car a)'quote)
+      "'"
+    )
+    ((eq(car a)+backquote+)
+      "`"
+    )
+    ((eq(car a)+comma+)
+      ","
+    )
+    ((eq(car a)+comma-at+)
+      ",@"
+    )
+  )
+)
+
 (defun atom*(a)
   (cond
     ((atom a)t)
@@ -229,21 +247,15 @@
 )
 
 (defun fmt-inline(a)
-  (if(atom* a)
-    (fmt-atom a)
-    (format nil "(~{~A~^ ~})" (mapcar #'fmt-inline a)))
-)
-
-(defun fmt-backquote(col a)
-   (format nil "`~A"(fmt(1+ col)(cadr a)))
-)
-
-(defun fmt-comma(col a)
-   (format nil ",~A"(fmt(1+ col)(cadr a)))
-)
-
-(defun fmt-comma-at(col a)
-   (format nil ",@~A"(fmt(+ 2 col)(cadr a)))
+  (cond
+    ((atom* a)
+      (fmt-atom a))
+    ((special-prefix a)
+      (let((p(special-prefix a)))
+       (concatenate 'string p(fmt-inline(cadr a)))))
+    (t
+      (format nil "(~{~A~^ ~})" (mapcar #'fmt-inline a)))
+  )
 )
 
 (defun fmt(col a)
@@ -251,15 +263,9 @@
     ((atom* a)
       (fmt-atom a)
     )
-    ((eq(car a)+backquote+)
-      (fmt-backquote col a)
-    )
-    ((eq(car a)+comma+)
-      (fmt-comma col a)
-    )
-    ((eq(car a)+comma-at+)
-      (fmt-comma-at col a)
-    )
+    ((special-prefix a)
+      (let((p(special-prefix a)))
+       (concatenate 'string p(fmt(+ col(length p))(cadr a)))))
     (t
       (fmt-inline a)
     )
