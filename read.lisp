@@ -1,4 +1,5 @@
 (defconstant +atom+ (gensym))
+(defconstant +prefix+ (gensym))
 
 (defconstant +backquote+ (gensym))
 (defconstant +comma+ (gensym))
@@ -10,8 +11,6 @@
 
 (defconstant +array+ (gensym))
 (defconstant +structure+ (gensym))
-(defconstant +package-marker+ (gensym))
-(defconstant +package-marker-2+ (gensym))
 
 (defun err(msg)
   (princ msg)
@@ -341,7 +340,7 @@
            )
         (cond
 
-          ;Sharpsign Backslash
+          ;Sharpsign Backslash, character
           ;http://www.lispworks.com/documentation/lw50/CLHS/Body/13_ag.htm
           ((eql dispatch(elt "\\" 0))
             (cond
@@ -368,13 +367,13 @@
             )
           )
 
-          ;Sharpsign Single-Quote
+          ;Sharpsign Single-Quote, function
           ((equal *tok*"#'")
             (lex)
             `(function ,(read*))
           )
 
-          ;Sharpsign Left-Parenthesis
+          ;Sharpsign Left-Parenthesis, vector
           ((eql dispatch(elt"("0))
             (lex)
             (let*(
@@ -390,7 +389,7 @@
             )
           )
 
-          ;Sharpsign Asterisk
+          ;Sharpsign Asterisk, bit vector
           ((eql dispatch(elt"*"0))
             (prog1
               (list
@@ -399,135 +398,48 @@
               (lex))
           )
 
-          ;Sharpsign Colon
+          ;Sharpsign Colon, keyword
           ((eql dispatch(elt":"0))
             (prog1
               (read-from-string *tok*)
               (lex))
           )
 
-          ;Sharpsign Dot
+          ;Sharpsign Dot, read eval
           ((equal *tok*"#.")
             (lex)
             (list +read-eval+ (read*))
           )
 
-          ;Sharpsign B
-          ((eql (char-downcase dispatch)(elt"b"0))
-            (prog1
-              (list
-                +atom+
-                (concatenate 'string
-                  "#b"
-                  (lex)
-                )
-              )
-              (lex)
-            )
-          )
-
-          ;Sharpsign O
-          ((eql (char-downcase dispatch)(elt"o"0))
-            (prog1
-              (list
-                +atom+
-                (concatenate 'string
-                  "#o"
-                  (lex)
-                )
-              )
-              (lex)
-            )
-          )
-
-          ;Sharpsign X
-          ((eql (char-downcase dispatch)(elt"x"0))
-            (prog1
-              (list
-                +atom+
-                (concatenate 'string
-                  "#x"
-                  (lex)
-                )
-              )
-              (lex)
-            )
-          )
-
-          ;Sharpsign R
-          ((eql (char-downcase dispatch)(elt"r"0))
-            (prog1
-              (list
-                +atom+
-                (concatenate 'string
-                  "#"
-                  arg
-                  "r"
-                  (lex)
-                )
-              )
-              (lex)
-            )
-          )
-
-          ;Sharpsign C
-          ((eql (char-downcase dispatch)(elt"c"0))
-            (prog1
-              (list
-                +atom+
-                (concatenate 'string
-                  "#c"
-                  (lex)
-                  (lex)
-                  " "
-                  (lex)
-                  (lex)
-                )
-              )
-              (lex)
-            )
-          )
-
-          ;Sharpsign A
-          ((eql (char-downcase dispatch)(elt"a"0))
-            (lex)
-            (list +array+ n(read*))
-          )
-
-          ;Sharpsign S
-          ((eql (char-downcase dispatch)(elt"s"0))
-            (lex)
-            (list +structure+ (read*))
-          )
-
-          ;Sharpsign P
-          ((eql (char-downcase dispatch)(elt"p"0))
-            (lex)
-            (parse-namestring(read*))
-          )
-
-          ;Sharpsign Plus
+          ;Sharpsign Plus, feature expression
           ((eql dispatch(elt"+"0))
             (lex)
             (list +feature-plus+(read*)(read*))
           )
 
-          ;Sharpsign Minus
+          ;Sharpsign Minus, feature expression
           ((eql dispatch(elt"-"0))
             (lex)
             (list +feature-minus+(read*)(read*))
           )
 
-          ;Sharpsign Vertical-Bar
+          ;Sharpsign Vertical-Bar, comment
           ((eql dispatch(elt"|"0))
             (prog1
               (list +atom+ *tok*)
               (lex))
           )
 
-          ;other
+          ;general prefix
           (t
-            (err(format nil"~a not supported"*tok*))
+            (list
+              +prefix+
+              (prog1
+                *tok*
+                (lex)
+              )
+              (read*)
+            )
           )
 
         )

@@ -87,15 +87,6 @@ do(lex)))
 ;Sharpsign Dot
 (assert(equal(read-string "#.123")(list +read-eval+ 123)))
 (assert(equal(read-string "#.abc")(list +read-eval+ 'abc)))
-;Sharpsign A
-(assert(equal(read-string "#2A((0 1 5) (foo 2 (hot dog)))") (list +array+ 2 '((0 1 5) (foo 2 (hot dog)))   )))
-(assert(equal(read-string "#1A((0 1 5) (foo 2 (hot dog)))") (list +array+ 1 '((0 1 5) (foo 2 (hot dog)))   )))
-(assert(equal(read-string "#0A((0 1 5) (foo 2 (hot dog)))") (list +array+ 0 '((0 1 5) (foo 2 (hot dog)))   )))
-(assert(equal(read-string "#0A foo") (list +array+ 0 'foo   )))
-;Sharpsign S
-(assert(equal(read-string "#s(name slot1 value1 slot2 value2)") (list +structure+ '(name slot1 value1 slot2 value2)   )))
-;Sharpsign P
-(assert(equal(read-string "#p\"abc\"") #p"abc"))
 ;Sharpsign Plus
 (assert(equal(read-string "(cons #+spice \"Spice\" #-spice \"Lispm\" x)") `(cons (,+feature-plus+ spice "Spice") (,+feature-minus+ spice "Lispm") x)))
 ;Sharpsign Vertical-Bar

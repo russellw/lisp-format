@@ -266,6 +266,8 @@
   (acond
     ((fmt-atom a)
       it)
+    ((eq(car a)+prefix+)
+      (concatenate 'string (cadr a) (format nil "~{~a~^ ~}" (mapcar #'fmt-inline (cddr a)))))
     ((special-prefix a)
        (concatenate 'string it(fmt-inline(cadr a))))
     ((feature-expression a)
