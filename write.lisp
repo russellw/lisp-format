@@ -207,26 +207,6 @@
 
 
 
-(defun special-prefix(a)
-  (cond
-    ((eq(car a)'quote)
-      "'"
-    )
-    ((eq(car a)'function)
-      "#'"
-    )
-    ((eq(car a)+backquote+)
-      "`"
-    )
-    ((eq(car a)+comma+)
-      ","
-    )
-    ((eq(car a)+comma-at+)
-      ",@"
-    )
-  )
-)
-
 (defun fmt-atom(a)
   (cond
     ((atom a)
@@ -243,8 +223,6 @@
       it)
     ((eq(car a)+prefix+)
       (concatenate 'string (cadr a) (format nil "~{~a~^ ~}" (mapcar #'fmt-inline (cddr a)))))
-    ((special-prefix a)
-       (concatenate 'string it(fmt-inline(cadr a))))
     (t
       (format nil "(~{~a~^ ~})" (mapcar #'fmt-inline a)))
   )
@@ -254,8 +232,6 @@
   (acond
     ((fmt-atom a)
       it)
-    ((special-prefix a)
-       (concatenate 'string it(fmt(+ col(length it))(cadr a))))
     (t
       (fmt-inline a)
     )

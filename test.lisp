@@ -53,8 +53,6 @@ do(lex)))
 (assert(equal(read-string ":abc"):abc))
 ;Left-Parenthesis
 (assert(equal(read-string "(a b c (d e f) g h i)")'(a b c (d e f) g h i)))
-;Single-Quote
-(assert(equal(read-string "'a")' 'a))
 ;semicolon
 (assert(equal(read-string "; comment")(list +atom+ "; comment")))
 ;Double-Quote
@@ -62,11 +60,6 @@ do(lex)))
 (assert(equal(read-string "\"\"")""))
 (assert(equal(read-string "\"\\\"APL\\\\360?\\\" he cried.\"")"\"APL\\360?\" he cried."))
 (assert(equal(read-string "\"|x| = |-x|\"")"|x| = |-x|"))
-;backquote
-(assert(equal(read-string "`a")(list +backquote+ 'a)))
-;comma
-(assert(equal(read-string ",a")(list +comma+ 'a)))
-(assert(equal(read-string ",@a")(list +comma-at+ 'a)))
 ;sharpsign Backslash
 (assert(equal(read-string "#\\newline")#\newline))
 (assert(equal(read-string "#\\a")#\a))
@@ -103,10 +96,6 @@ do(lex)))
 (assert(equal(fmt-inline 123)"123"))
 (assert(equal(fmt-inline -123)"-123"))
 (assert(equal(fmt-inline '(foo bar))"(foo bar)"))
-(assert(equal(fmt-inline ''(foo bar))"'(foo bar)"))
-(assert(equal(fmt-inline `(,+backquote+ (foo bar)))"`(foo bar)"))
-(assert(equal(fmt-inline `(,+comma+ (foo bar)))",(foo bar)"))
-(assert(equal(fmt-inline `(,+comma-at+ (foo bar)))",@(foo bar)"))
 
 ;read then write
 (defun read-write(s)(assert(equal(fmt 0(read-string s))s)))
@@ -158,7 +147,3 @@ do(lex)))
 (write-read #\newline)
 (write-read #\space)
 (write-read '(foo bar))
-(write-read ''(foo bar))
-(write-read `(,+backquote+ (foo bar)))
-(write-read `(,+comma+ (foo bar)))
-(write-read `(,+comma-at+ (foo bar)))

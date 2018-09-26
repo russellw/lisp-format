@@ -1,10 +1,6 @@
 (defconstant +atom+ (gensym))
 (defconstant +prefix+ (gensym))
 
-(defconstant +backquote+ (gensym))
-(defconstant +comma+ (gensym))
-(defconstant +comma-at+ (gensym))
-
 (defun err(msg)
   (princ msg)
   (quit))
@@ -289,9 +285,18 @@
       (err"unexpected ')'"))
 
     ;Single-Quote
-    ((equal *tok* "'" )
-      (lex)
-      `(quote ,(read*))
+    ((or(equal *tok* "'" )
+        (equal *tok* "`" )
+        (equal *tok* "," )
+        (equal *tok* ",@" ))
+            (list
+              +prefix+
+              (prog1
+                *tok*
+                (lex)
+              )
+              (read*)
+            )
     )
 
     ;Semicolon
@@ -306,22 +311,6 @@
       (prog1
         (read-from-string *tok*)
         (lex))
-    )
-
-    ;Backquote
-    ((equal *tok* "`" )
-      (lex)
-      (list +backquote+ (read*))
-    )
-
-    ;Comma
-    ((equal *tok* "," )
-      (lex)
-      (list +comma+ (read*))
-    )
-    ((equal *tok* ",@" )
-      (lex)
-      (list +comma-at+ (read*))
     )
 
     ;Sharpsign
