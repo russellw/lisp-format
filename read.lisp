@@ -231,6 +231,11 @@
             )
           )
 
+          ;Sharpsign Left-Parenthesis
+          ((eql(peek-char)(elt"("0))
+            ""
+          )
+
           ;Sharpsign Asterisk
           ((eql(peek-char)(elt"*"0))
             (concatenate 'string
@@ -363,28 +368,6 @@
                 (err "unknown character name"))
               (t
                 (elt *tok* 2))
-            )
-          )
-
-          ;Sharpsign Single-Quote, function
-          ((equal *tok*"#'")
-            (lex)
-            `(function ,(read*))
-          )
-
-          ;Sharpsign Left-Parenthesis, vector
-          ((eql dispatch(elt"("0))
-            (lex)
-            (let*(
-                  (s      (loop
-                            until(equal *tok*")")
-                            collect(read*)
-                          )
-                  )
-                  (v(make-array (if n n (length s))))
-                )
-                (fill-vector v s)
-                v
             )
           )
 
