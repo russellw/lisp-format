@@ -537,28 +537,12 @@
     ;number or symbol
     ;http://www.lispworks.com/documentation/lw50/CLHS/Body/02_c.htm
     (t
-      (let ((s *tok*))
+      (prog1
+        (if(and(not(eql(elt *tok* 0)#\:))
+               (find #\: *tok*))
+          (list +atom+ *tok*)
+          (read-from-string *tok*))
         (lex)
-        (cond
-          ((=(length(split-string"::"s))2)
-              (cons +package-marker-2+
-                (loop
-                  for x in (split-string"::"s)
-                  collect(read-from-string x)
-                )
-              )
-          )
-          ((=(length(split-string":"s))2)
-              (cons +package-marker+
-                (loop
-                  for x in (split-string":"s)
-                  collect(read-from-string x)
-                )
-              )
-          )
-          (t
-            (read-from-string s))
-        )
       )
     )
   )

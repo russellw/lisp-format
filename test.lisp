@@ -51,8 +51,6 @@ do(lex)))
 (assert(equal(read-string "\\a")'\a))
 (assert(equal(read-string "|one two three|")'|one two three|))
 (assert(equal(read-string ":abc"):abc))
-(assert(equal(read-string "abc:xyz")(list +package-marker+ 'abc 'xyz)))
-(assert(equal(read-string "abc::xyz")(list +package-marker-2+ 'abc 'xyz)))
 ;Left-Parenthesis
 (assert(equal(read-string "(a b c (d e f) g h i)")'(a b c (d e f) g h i)))
 ;Single-Quote
@@ -166,6 +164,9 @@ do(lex)))
 (read-write"#P\"abc\"")
 (read-write"#*1111")
 (read-write"#:abc")
+(read-write":abc")
+(read-write"abc:def")
+(read-write"abc::def")
 
 ;write then read
 (defun write-read (a) (assert (equal (read-string (fmt 0 a)) a)))
