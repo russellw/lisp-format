@@ -208,17 +208,14 @@
 
 
 (defun fmt-atom(a)
-  (cond
-    ((atom a)
       (let((*print-case* :downcase))
-        (prin1-to-string a)))
-  )
+        (prin1-to-string a))
 )
 
 (defun fmt-inline(a)
-  (acond
-    ((fmt-atom a)
-      it)
+  (cond
+    ((atom a)
+      (fmt-atom a))
     ((eq(car a)+special+)
       (concatenate 'string (cadr a) (format nil "~{~a~^ ~}" (mapcar #'fmt-inline (cddr a)))))
     (t
@@ -227,9 +224,9 @@
 )
 
 (defun fmt(col a)
-  (acond
-    ((fmt-atom a)
-      it)
+  (cond
+    ((atom a)
+      (fmt-atom a))
     (t
       (fmt-inline a)
     )
