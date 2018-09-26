@@ -91,7 +91,7 @@
      (pp-write a))
 
     ;comment
-    ((eq (car a) +atom+)
+    ((eq (car a) +special+)
      (blank-line)
      (pp-string (cadr a))
      (next-line))
@@ -111,7 +111,7 @@
      (let ((*indent* (+ *indent* 2)))
        (dolist (b a)
          (cond
-           ((eq (car b) +atom+)
+           ((eq (car b) +special+)
             (blank-line)
             (pp-string (cadr b))
             (next-line))
@@ -176,7 +176,7 @@
      nil)
 
     ;comment
-    ((eq (car a) +atom+)
+    ((eq (car a) +special+)
      t)
 
     ;special forms
@@ -212,8 +212,6 @@
     ((atom a)
       (let((*print-case* :downcase))
         (prin1-to-string a)))
-    ((eq(car  a)+atom+)
-      (cadr a))
   )
 )
 
@@ -221,7 +219,7 @@
   (acond
     ((fmt-atom a)
       it)
-    ((eq(car a)+prefix+)
+    ((eq(car a)+special+)
       (concatenate 'string (cadr a) (format nil "~{~a~^ ~}" (mapcar #'fmt-inline (cddr a)))))
     (t
       (format nil "(~{~a~^ ~})" (mapcar #'fmt-inline a)))

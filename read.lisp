@@ -1,5 +1,4 @@
-(defconstant +atom+ (gensym))
-(defconstant +prefix+ (gensym))
+(defconstant +special+ (gensym))
 
 (defun err(msg)
   (princ msg)
@@ -287,7 +286,7 @@
     ;Single-Quote
     ((member *tok* '("'" "`" "," ",@") :test #'string=)
             (list
-              +prefix+
+              +special+
               (prog1
                 *tok*
                 (lex)
@@ -299,7 +298,7 @@
     ;Semicolon
     ((eql(elt *tok* 0)(elt ";" 0))
       (prog1
-        (list +atom+ *tok*)
+        (list +special+ *tok*)
         (lex))
     )
 
@@ -355,7 +354,7 @@
           ((eql dispatch(elt"*"0))
             (prog1
               (list
-                +atom+
+                +special+
                 *tok*)
               (lex))
           )
@@ -370,7 +369,7 @@
           ;feature expression
           ((member dispatch'(#\+ #\-))
             (list
-              +prefix+
+              +special+
               (prog1
                 *tok*
                 (lex)
@@ -383,14 +382,14 @@
           ;Sharpsign Vertical-Bar, comment
           ((eql dispatch(elt"|"0))
             (prog1
-              (list +atom+ *tok*)
+              (list +special+ *tok*)
               (lex))
           )
 
           ;general prefix
           (t
             (list
-              +prefix+
+              +special+
               (prog1
                 *tok*
                 (lex)
@@ -409,7 +408,7 @@
       (prog1
         (if(and(not(eql(elt *tok* 0)#\:))
                (find #\: *tok*))
-          (list +atom+ *tok*)
+          (list +special+ *tok*)
           (read-from-string *tok*))
         (lex)
       )
