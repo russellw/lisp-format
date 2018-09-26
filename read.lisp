@@ -285,10 +285,7 @@
       (err"unexpected ')'"))
 
     ;Single-Quote
-    ((or(equal *tok* "'" )
-        (equal *tok* "`" )
-        (equal *tok* "," )
-        (equal *tok* ",@" ))
+    ((member *tok* '("'" "`" "," ",@") :test #'string=)
             (list
               +prefix+
               (prog1
