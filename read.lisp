@@ -5,12 +5,6 @@
 (defconstant +comma+ (gensym))
 (defconstant +comma-at+ (gensym))
 
-(defconstant +feature-plus+ (gensym))
-(defconstant +feature-minus+ (gensym))
-
-(defconstant +array+ (gensym))
-(defconstant +structure+ (gensym))
-
 (defun err(msg)
   (princ msg)
   (quit))
@@ -387,16 +381,17 @@
               (lex))
           )
 
-          ;Sharpsign Plus, feature expression
-          ((eql dispatch(elt"+"0))
-            (lex)
-            (list +feature-plus+(read*)(read*))
-          )
-
-          ;Sharpsign Minus, feature expression
-          ((eql dispatch(elt"-"0))
-            (lex)
-            (list +feature-minus+(read*)(read*))
+          ;feature expression
+          ((member dispatch'(#\+ #\-))
+            (list
+              +prefix+
+              (prog1
+                *tok*
+                (lex)
+              )
+              (read*)
+              (read*)
+            )
           )
 
           ;Sharpsign Vertical-Bar, comment

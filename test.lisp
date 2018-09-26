@@ -73,8 +73,6 @@ do(lex)))
 (assert(equal(read-string "#\\'")#\'))
 ;Sharpsign Colon
 (assert(symbolp(read-string "#:abc") ))
-;Sharpsign Plus
-(assert(equal(read-string "(cons #+spice \"Spice\" #-spice \"Lispm\" x)") `(cons (,+feature-plus+ spice "Spice") (,+feature-minus+ spice "Lispm") x)))
 ;Sharpsign Vertical-Bar
 (assert(equal(read-string
                    "(defun add3 (n) #|(format t \"~&Adding 3 to ~D.\" n)|# (+ n 3))")

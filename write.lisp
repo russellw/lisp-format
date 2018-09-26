@@ -97,13 +97,6 @@
      (next-line))
 
     ;reader macros
-    ((eq (car a) +feature-plus+)
-     (next-line)
-     (pp-string "#+")
-     (pp (cadr a))
-     (pp-string " ")
-     (pp (caddr a))
-     (next-line))
     ((eq (car a) 'function)
      (pp-string "#'")
      (pp (cadr a)))
@@ -186,10 +179,6 @@
     ((eq (car a) +atom+)
      t)
 
-    ;reader macros
-    ((eq (car a) +feature-plus+)
-     t)
-
     ;special forms
     ((member (car a) '(defun let loop))
      t)
@@ -217,17 +206,6 @@
 
 
 
-
-(defun feature-expression(a)
-  (cond
-    ((eq(car a)+feature-plus+)
-      "#+"
-    )
-    ((eq(car a)+feature-minus+)
-      "#-"
-    )
-  )
-)
 
 (defun special-prefix(a)
   (cond
@@ -267,8 +245,6 @@
       (concatenate 'string (cadr a) (format nil "~{~a~^ ~}" (mapcar #'fmt-inline (cddr a)))))
     ((special-prefix a)
        (concatenate 'string it(fmt-inline(cadr a))))
-    ((feature-expression a)
-       (format nil "~a~a ~a" it(fmt-inline(cadr a))(fmt-inline(caddr a))))
     (t
       (format nil "(~{~a~^ ~})" (mapcar #'fmt-inline a)))
   )
@@ -280,9 +256,6 @@
       it)
     ((special-prefix a)
        (concatenate 'string it(fmt(+ col(length it))(cadr a))))
-    ((feature-expression a)
-      (let((p(fmt-inline(cadr a))))
-       (format nil "~a~a ~a" it p(fmt(+ col 2(length p)) (caddr a)))))
     (t
       (fmt-inline a)
     )
