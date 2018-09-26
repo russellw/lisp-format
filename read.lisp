@@ -4,7 +4,6 @@
 (defconstant +backquote+ (gensym))
 (defconstant +comma+ (gensym))
 (defconstant +comma-at+ (gensym))
-(defconstant +read-eval+ (gensym))
 
 (defconstant +feature-plus+ (gensym))
 (defconstant +feature-minus+ (gensym))
@@ -403,12 +402,6 @@
             (prog1
               (read-from-string *tok*)
               (lex))
-          )
-
-          ;Sharpsign Dot, read eval
-          ((equal *tok*"#.")
-            (lex)
-            (list +read-eval+ (read*))
           )
 
           ;Sharpsign Plus, feature expression

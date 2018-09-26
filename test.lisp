@@ -84,9 +84,6 @@ do(lex)))
 (assert(equalp(read-string "#0()") #() ))
 ;Sharpsign Colon
 (assert(symbolp(read-string "#:abc") ))
-;Sharpsign Dot
-(assert(equal(read-string "#.123")(list +read-eval+ 123)))
-(assert(equal(read-string "#.abc")(list +read-eval+ 'abc)))
 ;Sharpsign Plus
 (assert(equal(read-string "(cons #+spice \"Spice\" #-spice \"Lispm\" x)") `(cons (,+feature-plus+ spice "Spice") (,+feature-minus+ spice "Lispm") x)))
 ;Sharpsign Vertical-Bar
@@ -123,7 +120,6 @@ do(lex)))
 (assert(equal(fmt-inline `(,+backquote+ (foo bar)))"`(foo bar)"))
 (assert(equal(fmt-inline `(,+comma+ (foo bar)))",(foo bar)"))
 (assert(equal(fmt-inline `(,+comma-at+ (foo bar)))",@(foo bar)"))
-(assert(equal(fmt-inline `(,+read-eval+ (foo bar)))"#.(foo bar)"))
 
 ;read then write
 (defun read-write(s)(assert(equal(fmt 0(read-string s))s)))
@@ -177,4 +173,3 @@ do(lex)))
 (write-read `(,+backquote+ (foo bar)))
 (write-read `(,+comma+ (foo bar)))
 (write-read `(,+comma-at+ (foo bar)))
-(write-read `(,+read-eval+ (foo bar)))

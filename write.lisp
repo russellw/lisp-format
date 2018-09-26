@@ -246,9 +246,6 @@
     ((eq(car a)+comma-at+)
       ",@"
     )
-    ((eq(car a)+read-eval+)
-      "#."
-    )
   )
 )
 
