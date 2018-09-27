@@ -197,13 +197,6 @@
     (t
      (some #'multiline a))))
 
-(defun write-file (file s)
-  (with-open-file (*standard-output* file :direction :output :if-exists
-                   :supersede)
-    (let ((*print-case* :downcase))
-      (pp-lines s)
-      (terpri))))
-
 
 
 
@@ -223,12 +216,49 @@
   )
 )
 
+(defun fmt-params(col params)
+  (format nil "~{~a~^ ~}" (mapcar #'fmt-inline params))
+)
+
+(defun fmt-lines(col s)
+  (apply #'concatenate 'string
+    (loop for (a . more) on s
+      collect #.(format nil "~%")
+      collect(make-array col :initial-element #\space)
+      collect (fmt col a)
+    )
+  )
+)
+
+(defun fmt-defun(col a)
+  (destructuring-bind (_ name params &rest body) a
+    (format nil "(defun ~a (~a)~a)"
+      (fmt-inline name)
+      (fmt-params (+ col 8) params)
+      (fmt-lines (+ col 2) body)
+    )
+  )
+)
+
 (defun fmt(col a)
   (cond
     ((atom a)
       (fmt-atom a))
+    ((eq(car a)'defun)
+      (fmt-defun col a))
     (t
       (fmt-inline a)
     )
   )
 )
+
+(defun write-all (s)
+    (dolist (a s)
+      (format t "~a~%" (fmt 0 a))
+    )
+)
+
+(defun write-file (file s)
+  (with-open-file (*standard-output* file :direction :output :if-exists
+                   :supersede)
+          (write-all s)))

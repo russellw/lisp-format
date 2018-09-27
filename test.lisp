@@ -142,3 +142,8 @@ do(lex)))
 (write-read #\newline)
 (write-read #\space)
 (write-read '(foo bar))
+
+;file
+(let((s(read-file"main.lisp")))
+  (write-all s)
+)

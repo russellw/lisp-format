@@ -141,6 +141,7 @@
 )
 
 (defun block-comment()
+  (assert(eql(peek-char)(elt"|"0)))
   (concatenate 'string
     (list(read-char))
     (loop
@@ -148,7 +149,7 @@
       collect c
       until (and(eql c (elt"|"0))(eql(peek-char)(elt"#"0)))
       if (and(eql c (elt"#"0))(eql(peek-char)(elt"|"0)))
-        append(concatenate 'list (list(read-char)) (block-comment))
+        append(coerce(block-comment)'list)
       do
       (setf c(read-char))
     )
@@ -420,5 +421,10 @@
   (loop
     while *tok*
     collect (read*)
+  )
+)
+(defun read-file (file )
+  (with-open-file (*standard-input* file)
+           (read-all)
   )
 )

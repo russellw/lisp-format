@@ -17,8 +17,7 @@
       #+sbcl (cdr *posix-argv*)
       )
     (dolist (file args)
-      (princ file)
-      (terpri)
+      (format t "~a~%" file)
       (let ((s (read-file file))
             (backup (make-pathname :defaults file :directory "/tmp/")))
         (ignore-errors
