@@ -1,6 +1,9 @@
 ;boilerplate
 #+sbcl (declaim (muffle-conditions style-warning))
 
+;globals
+(defvar *right-margin* 40)
+
 ;macros
 (load "macros")
 
@@ -8,9 +11,6 @@
 (load "etc")
 (load "read")
 (load "write")
-
-;globals
-(defvar *right-margin* 40)
 
 (defun main ()
   (let ((args))
