@@ -220,9 +220,9 @@
   (format nil "~{~a~^ ~}" (mapcar #'fmt-inline params))
 )
 
-(defun fmt-lines(col s)
+(defun fmt-lines-indent-prefix(col s)
   (apply #'concatenate 'string
-    (loop for (a . more) on s
+    (loop for a in s
       collect #.(format nil "~%")
       collect(make-array col :initial-element #\space)
       collect (fmt col a)
@@ -230,12 +230,59 @@
   )
 )
 
+(defun fmt-lines-indent-separator(col s)
+  (apply #'concatenate 'string
+    (loop for (a . more) on s
+      collect (fmt col a)
+      if more
+      collect #.(format nil "~%")and
+      collect(make-array col :initial-element #\space)
+    )
+  )
+)
+
+(defun fmt-let(col a)
+  (destructuring-bind (op vars &rest body) a
+    (setf op(fmt-inline op))
+    (format nil "(~a (~a)~a)"
+      op
+      (fmt-lines-indent-separator  (+ col 1 (length op) 1) vars)
+      (fmt-lines-indent-prefix (+ col 2) body)
+    )
+  )
+)
+
 (defun fmt-defun(col a)
-  (destructuring-bind (_ name params &rest body) a
-    (format nil "(defun ~a (~a)~a)"
+  (destructuring-bind (op name params &rest body) a
+    (setf op(fmt-inline op))
+    (format nil "(~a ~a (~a)~a)"
+      op
       (fmt-inline name)
-      (fmt-params (+ col 8) params)
-      (fmt-lines (+ col 2) body)
+      (fmt-params (+ col 1 (length op) 1) params)
+      (fmt-lines-indent-prefix (+ col 2) body)
+    )
+  )
+)
+
+(defun fmt1(col a)
+  (destructuring-bind (op param1 &rest body) a
+    (setf op(fmt-inline op))
+    (format nil "(~a ~a~a)"
+      op
+      (fmt-inline param1)
+      (fmt-lines-indent-prefix (+ col 2) body)
+    )
+  )
+)
+
+(defun fmt2(col a)
+  (destructuring-bind (op param1 param2 &rest body) a
+    (setf op(fmt-inline op))
+    (format nil "(~a ~a ~a~a)"
+      op
+      (fmt-inline param1)
+      (fmt-inline param2)
+      (fmt-lines-indent-prefix (+ col 2) body)
     )
   )
 )
@@ -246,6 +293,12 @@
       (fmt-atom a))
     ((eq(car a)'defun)
       (fmt-defun col a))
+    ((member(car a)'(let let*))
+      (fmt-let col a))
+    ((member(car a)'(dolist dotimes))
+      (fmt1 col a))
+    ((member(car a)'(format))
+      (fmt2 col a))
     (t
       (fmt-inline a)
     )
