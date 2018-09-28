@@ -246,7 +246,7 @@
     (setf op(fmt-inline op))
     (format nil "(~a (~a)~a)"
       op
-      (fmt-lines-indent-separator  (+ col 1 (length op) 1) vars)
+      (fmt-lines-indent-separator  (+ col 1 (length op) 2) vars)
       (fmt-lines-indent-prefix (+ col 2) body)
     )
   )
@@ -259,6 +259,16 @@
       op
       (fmt-inline name)
       (fmt-params (+ col 1 (length op) 1) params)
+      (fmt-lines-indent-prefix (+ col 2) body)
+    )
+  )
+)
+
+(defun fmt0(col a)
+  (destructuring-bind (op &rest body) a
+    (setf op(fmt-inline op))
+    (format nil "(~a~a)"
+      op
       (fmt-lines-indent-prefix (+ col 2) body)
     )
   )
@@ -299,8 +309,11 @@
       (fmt1 col a))
     ((member(car a)'(format))
       (fmt2 col a))
-    (t
+    ((<=(+ col(length(fmt-inline a)))*right-margin*)
       (fmt-inline a)
+    )
+    (t
+      (fmt0 col a)
     )
   )
 )

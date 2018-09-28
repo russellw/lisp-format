@@ -9,6 +9,9 @@
 (load "read")
 (load "write")
 
+;globals
+(defvar *right-margin* 40)
+
 (defun main ()
   (let ((args))
     (setf
