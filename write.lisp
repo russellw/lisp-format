@@ -199,6 +199,30 @@
 
 
 
+(defun fmt-clause(col a)
+    (if(eq(car a)+special+)
+      (fmt-special col a)
+      (format nil"(~a)"(fmt-lines-indent-separator(1+ col)a)))
+)
+(defun fmt-clauses(col s)
+  (apply #'concatenate 'string
+    (loop for a in s
+      collect #.(format nil "~%")
+      collect(make-array col :initial-element #\space)
+      collect (fmt-clause col a)
+    )
+  )
+)
+(defun fmt-cond(col a)
+  (destructuring-bind (op &rest clauses) a
+    (setf op(fmt-inline op))
+    (format nil "(~a~a)"
+      op
+      (fmt-clauses (+ col 2) clauses)
+    )
+  )
+)
+
 
 (defun fmt-atom(a)
 (if    (characterp a)
@@ -317,6 +341,8 @@
       (fmt-atom a))
 
       ;known forms
+    ((eq(car a)'cond)
+      (fmt-cond col a))
     ((eq(car a)'defun)
       (fmt-defun col a))
     ((member(car a)'(let let*))
