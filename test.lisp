@@ -144,6 +144,6 @@ do(lex)))
 (write-read '(foo bar))
 
 ;file
-(let((s(read-file"main.lisp")))
+(let((s(read-file"read.lisp")))
   (write-all s)
 )

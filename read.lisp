@@ -327,6 +327,7 @@
           ;Sharpsign Backslash, character
           ;http://www.lispworks.com/documentation/lw50/CLHS/Body/13_ag.htm
           ((eql dispatch(elt "\\" 0))
+            (prog1
             (cond
               ((string-equal *tok*"#\\newline")
                 #\newline)
@@ -349,6 +350,7 @@
               (t
                 (elt *tok* 2))
             )
+              (lex))
           )
 
           ;Sharpsign Asterisk, bit vector

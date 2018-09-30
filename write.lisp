@@ -318,7 +318,7 @@
       (fmt-defun col a))
     ((member(car a)'(let let*))
       (fmt-let col a))
-    ((member(car a)'(dolist dotimes))
+    ((member(car a)'(dolist dotimes with-open-file when unless))
       (fmt1 col a))
     ((member(car a)'(format))
       (fmt2 col a))
