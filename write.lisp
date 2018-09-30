@@ -297,10 +297,23 @@
   )
 )
 
+(defun fmt-special(col a)
+  (cond
+    ((member (cadr a) '("#+" "#-") :test #'string=)
+      (concatenate 'string (cadr a) (fmt-inline(caddr a)) (fmt-lines-indent-prefix (+ col 2) (cdddr a)))
+    )
+    (t
+      (concatenate 'string (cadr a) (fmt-lines-indent-prefix (+ col 2) (cddr a)))
+    )
+  )
+)
+
 (defun fmt(col a)
   (cond
     ((atom a)
       (fmt-atom a))
+
+      ;known forms
     ((eq(car a)'defun)
       (fmt-defun col a))
     ((member(car a)'(let let*))
@@ -309,9 +322,14 @@
       (fmt1 col a))
     ((member(car a)'(format))
       (fmt2 col a))
+
+      ;fits on one line
     ((<=(+ col(length(fmt-inline a)))*right-margin*)
       (fmt-inline a)
     )
+    ;needs multiple lines
+    ((eq(car a)+special+)
+      (fmt-special col a))
     (t
       (fmt0 col a)
     )
