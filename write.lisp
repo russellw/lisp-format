@@ -201,8 +201,11 @@
 
 
 (defun fmt-atom(a)
+(if    (characterp a)
+     (format nil "#\\~:c" a)
+
       (let((*print-case* :downcase))
-        (prin1-to-string a))
+        (prin1-to-string a)))
 )
 
 (defun fmt-inline(a)
