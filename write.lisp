@@ -1,203 +1,41 @@
-(defvar *indent* 0)
-(defvar *newlines* 0)
 
-(defun next-line ()
-  (setf *newlines* (max *newlines* 1)))
 
-(defun blank-line ()
-  (setf *newlines* 2))
-
-(defun pp-position ()
-  (unless
-    (= *newlines* 0)
-    (unless
-      (= (file-position *standard-output*) 0)
-      (dotimes (i *newlines*)
-        (terpri)))
-    (dotimes (i *indent*)
-      (write-char #\Space))
-    (setf *newlines* 0)))
-
-(defun pp-write (a)
-  (pp-position)
-  (write a))
-
-(defun pp-list (a)
-  (pp-position)
-  (if a (write a) (princ "()")))
-
-(defun pp-string (s)
-  (pp-position)
-  (princ s))
-
-(defun pp-special (a n)
-  (pp-string "(")
-  (pp-write (pop a))
-  (dotimes (i n)
-    (pp-string " ")
-    (pp-list (pop a)))
-  (let ((*indent* (+ *indent* 2)))
-    (pp-lines a)
-    (pp-string ")")))
-
-(defun pp-lines (s)
-  (dolist (a s)
-    (next-line)
-    (pp a)))
-
-(defun pp-spaces (s)
-  (dolist (a s)
-    (pp-string " ")
-    (pp a)))
-
-(defun loop-keyword (a)
-  (or (not a) (member a '(named initially finally for as with do collect
-                          collecting append appending nconc nconcing into count
-                          counting sum summing maximize return maximizing
-                          minimize minimizing doing thereis always never if
-                          when unless repeat while until))))
-
-(defun pp-loop (a)
-  (pp-string "(")
-  (pp-write (pop a))
-  (let ((*indent* (+ *indent* 2)))
-    (loop
-      while a
-      do
-      (cond
-        ((eq (car a) 'do)
-         (pp-lines a)
-         (setf a nil))
-        ((loop-keyword (car a))
-         (next-line)
-         (pp (pop a))
-         (loop
-           until (loop-keyword (car a))
-           do
-           (pp-string " ")
-           (pp (pop a))))
-        (t
-         (pp-lines a)
-         (setf a nil))))
-    (pp-string ")")))
-
-(defun pp (a)
+(defun fmt-loop-body(col s)
   (cond
-
-    ;atom
-    ((characterp a)
-     (format t "#\\~:c" a))
-    ((atom a)
-     (pp-write a))
-
-    ;comment
-    ((eq (car a) +special+)
-     (blank-line)
-     (pp-string (cadr a))
-     (next-line))
-
-    ;reader macros
-    ((eq (car a) 'function)
-     (pp-string "#'")
-     (pp (cadr a)))
-    ((eq (car a) 'quote)
-     (pp-string "'")
-     (pp-write (cadr a)))
-
-    ;special forms
-    ((eq (car a) 'cond)
-     (pp-string "(")
-     (pp-write (pop a))
-     (let ((*indent* (+ *indent* 2)))
-       (dolist (b a)
-         (cond
-           ((eq (car b) +special+)
-            (blank-line)
-            (pp-string (cadr b))
-            (next-line))
-           (t
-            (next-line)
-            (pp-string "(")
-            (let ((*indent* (+ *indent* 1)))
-              (pp (pop b))
-              (pp-lines b)
-              (pp-string ")")))))
-       (pp-string ")")))
-    ((eq (car a) 'defun)
-     (blank-line)
-     (pp-special a 2)
-     (blank-line))
-    ((member (car a) (list 'let 'let*))
-     (pp-string "(")
-     (let* ((op (pop a))
-            (vars (pop a))
-            (*indent* (+ *indent* 1 (length (string op)) 2)))
-       (pp-write op)
-       (pp-string " (")
-       (pp-write (pop vars))
-       (dolist (v vars)
-         (next-line)
-         (pp-write v)))
-     (pp-string ")")
-     (let ((*indent* (+ *indent* 2)))
-       (pp-lines a)
-       (pp-string ")")))
-    ((eq (car a) 'loop)
-     (pp-loop a))
-
-    ;0 special args
-    ((member (car a) '(ignore-errors))
-     (pp-special a 0))
-
-    ;1 special arg
-    ((member (car a) '(dolist dotimes with-open-file))
-     (pp-special a 1))
-
-    ;multiline
-    ((multiline a)
-     (pp-string "(")
-     (pp (pop a))
-     (let ((*indent* (+ *indent* 2)))
-       (pp-lines a)
-       (pp-string ")")))
-
-    ;inline
+    ((not s)
+      nil)
+    ((consp(car s))
+      (list*
+        (indent col s)
+        (fmt col(car s))
+        (fmt-loop-body col(cdr s))
+      )
+    )
     (t
-     (pp-string "(")
-     (pp (pop a))
-     (pp-spaces a)
-     (pp-string ")"))))
+      (let((k(fmt-inline(car s))))
+        (list*
+          (indent col s)
+          k
+          " "
+          (fmt(+ col(length k)1)(cadr s))
+          (fmt-loop-body col(cddr s))
+        )
+      )
+    )
+  )
+)
 
-(defun multiline (a)
-  (cond
-
-    ;atom
-    ((atom a)
-     nil)
-
-    ;comment
-    ((eq (car a) +special+)
-     t)
-
-    ;special forms
-    ((member (car a) '(defun let loop))
-     t)
-
-    ;0 special args
-    ((member (car a) '(ignore-errors))
-     t)
-
-    ;1 special arg
-    ((member (car a) '(dolist dotimes with-open-file))
-     t)
-
-    ;etc
-    ((eq (car a) 'quote)
-     nil)
-    (t
-     (some #'multiline a))))
-
-
+(defun fmt-loop(col a)
+  (destructuring-bind (op &rest body) a
+    (setf op(fmt-inline op))
+    (format nil "(~a~a)"
+      op
+      (apply #'concatenate 'string
+        (fmt-loop-body(1+ col)body)
+      )
+    )
+  )
+)
 
 (defun fmt-clause(col a)
     (if(eq(car a)+special+)
@@ -207,8 +45,7 @@
 (defun fmt-clauses(col s)
   (apply #'concatenate 'string
     (loop for a in s
-      collect #.(format nil "~%")
-      collect(make-array col :initial-element #\space)
+      collect (indent col (list a))
       collect (fmt-clause col a)
     )
   )
@@ -247,11 +84,27 @@
   (format nil "~{~a~^ ~}" (mapcar #'fmt-inline params))
 )
 
+(defun indent(col s)
+  (cond
+    ((not s)
+      ""
+    )
+    ((blankp (car s))
+      #.(format nil "~%")
+    )
+    (t
+      (concatenate 'string
+        #.(format nil "~%")
+        (make-array col :initial-element #\space)
+      )
+    )
+  )
+)
+
 (defun fmt-lines-indent-prefix(col s)
   (apply #'concatenate 'string
     (loop for a in s
-      collect #.(format nil "~%")
-      collect(make-array col :initial-element #\space)
+      collect (indent col (list a))
       collect (fmt col a)
     )
   )
@@ -261,9 +114,7 @@
   (apply #'concatenate 'string
     (loop for (a . more) on s
       collect (fmt col a)
-      if more
-      collect #.(format nil "~%")and
-      collect(make-array col :initial-element #\space)
+      collect (indent col more)
     )
   )
 )
@@ -347,6 +198,8 @@
       (fmt-defun col a))
     ((member(car a)'(let let*))
       (fmt-let col a))
+    ((eq(car a)'loop)
+      (fmt-loop col a))
     ((member(car a)'(dolist dotimes with-open-file when unless))
       (fmt1 col a))
     ((member(car a)'(format))

@@ -9,3 +9,9 @@
 (defun elt*(s i)
   (when(< i(length s))
     (elt s i)))
+
+(defun blankp(a)
+  (and
+    (consp a)
+    (eq(car a)+special+)
+    (eql(cadr a)"")))
