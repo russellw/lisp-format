@@ -74,15 +74,15 @@
           do
           (cond
           ;General options
-            ((member s '("h" "help" ) :test #'string=)
+            ((member s '("-h" "-help" ) :test #'string=)
               (help))
-            ((member s '("V" "v" "version") :test #'string=)
+            ((member s '("-V" "-v" "-version") :test #'string=)
               (version))
 
               ;Code transformations
-              ((equal s"comment-case")
+              ((equal s"-comment-case")
                 (setf comment-case t))
-              ((equal s"comment-space")
+              ((equal s"-comment-space")
                 (setf comment-space t))
 
               ;error
