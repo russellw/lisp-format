@@ -11,7 +11,7 @@
                 (i(position-if-not #'(lambda(c)(eql c #.(elt";"0)))s))
           )
       (if(eql(elt s i)#\space)
-        s
+        a
         (list
           +special+
           (concatenate 'string

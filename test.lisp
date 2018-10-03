@@ -143,8 +143,18 @@ do(lex)))
 (write-read #\space)
 (write-read '(foo bar))
 ;comment-space
+(assert (equal (fmt 0 (comment-space (read-string ";")))
+               ";"))
+(assert (equal (fmt 0 (comment-space (read-string "; ")))
+               "; "))
 (assert (equal (fmt 0 (comment-space (read-string ";foo")))
                "; foo"))
+(assert (equal (fmt 0 (comment-space (read-string "; foo")))
+               "; foo"))
+(assert (equal (fmt 0 (comment-space (read-string ";;foo")))
+               ";; foo"))
+(assert (equal (fmt 0 (comment-space (read-string ";; foo")))
+               ";; foo"))
 
 ;file
 (let((s(read-file"read.lisp")))

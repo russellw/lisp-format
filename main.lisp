@@ -55,6 +55,7 @@
               ;Code transformations
               (comment-case )
               (comment-space )
+              (all)
        )
     (setf
       args
@@ -98,6 +99,10 @@
           (delete-file backup))
         (ignore-errors
           (rename-file file backup))
+
+              ;Code transformations
+              (when (or comment-space all)
+                (setf s(comment-space s)))
 
         ;TODO: on error, restore backup
         (write-file file s)))
