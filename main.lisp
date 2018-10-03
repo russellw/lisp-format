@@ -15,14 +15,14 @@
 
 (defun canonical-option(s)
   (when(and(search"Win"(software-type))
-           (subseqp"/"s 0))
-    (when(eql s"/?")
+           (subseqp"/"s ))
+    (when(equal s"/?")
       (setf s "-h")
     )
     (setf(elt s 0 )#\-)
   )
   (loop while(and   (>(length s)2)
-                    (subseqp "--"s 0)
+                    (subseqp "--"s )
              )
     do
     (setf s(subseq s 1))
@@ -55,12 +55,16 @@
       (setf files
       (loop while args
         for s =(canonical-option (pop args))
-        if (and options (subseqp"-"s 0))
+        do
+      (format t"~a~%"s)
+        if (and options (subseqp"-"s ))
           do
-          (case s
-            ("h" (help))
-            (("V""v")(version))
-            (t s)
+          (cond
+            ((equal s"-h")
+              (help))
+            ((member s '("V" "v" ) :test #'string=)
+              (version))
+            (t (format t "FOO~%"))
           )
         else
            collect s
