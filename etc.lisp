@@ -15,3 +15,9 @@
     (consp a)
     (eq(car a)+special+)
     (eql(cadr a)"")))
+
+(defun line-comment-p(a)
+  (and
+    (consp a)
+    (eq(car a)+special+)
+    (eql(elt(cadr a)0)#.(elt";"0))))

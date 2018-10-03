@@ -14,6 +14,7 @@
 (load "write")
 
 ;Code transformations
+(load "comment-case")
 (load "comment-space")
 
 (defun canonical-option(s)
@@ -39,8 +40,8 @@
 (format t"-version        Show version~%")
 (format t"~%")
 (format t"Code transformations:~%")
-(format t"-comment-case   ; foo -> ; Foo~%")
-(format t"-comment-space  ;foo -> ; foo~%")
+(format t"-comment-case   ;; foo -> ;; Foo~%")
+(format t"-comment-space  ;;foo -> ;; foo~%")
 (format t"-all            All the above~%")
 )
 
@@ -79,6 +80,8 @@
               (version))
 
               ;Code transformations
+              ((equal s"comment-case")
+                (setf comment-case t))
               ((equal s"comment-space")
                 (setf comment-space t))
 
@@ -101,6 +104,8 @@
           (rename-file file backup))
 
               ;Code transformations
+              (when (or comment-case all)
+                (setf s(comment-case s)))
               (when (or comment-space all)
                 (setf s(comment-space s)))
 

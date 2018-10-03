@@ -1,4 +1,4 @@
-(defun comment-space(a)
+(defun comment-case(a)
   (cond
     ((atom a)
       a)
@@ -7,24 +7,30 @@
                 (s(cadr a))
                 (i(position-if-not #'(lambda(c)(eql c #.(elt";"0)))s))
           )
+      (unless i
+        (setf i(length s)))
+      (if(eql(elt* s i)#\space)
+        (incf i))
       (cond
-        ((not i)
+        ((= i(length s))
           a)
-        ((eql(elt s i)#\space)
+        ((subseqp "http"s i)
           a)
-        (t
+        ((lower-case-p(elt s i))
           (list
             +special+
             (concatenate 'string
               (subseq s 0 i)
-              " "
-              (subseq s i)
+              (string(char-upcase(elt s i)))
+              (subseq s (1+ i))
             )
-          ))
+          )
+        )
+        (t a)
       )
      )
     )
     (t
-      (mapcar #'comment-space a))
+      (mapcar #'comment-case a))
   )
 )
