@@ -1,4 +1,3 @@
-(defconstant +special+ (gensym))
 
 (defun err(msg)
   (princ msg)

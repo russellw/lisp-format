@@ -1,4 +1,4 @@
-(defun subseqp(needle haystack i)
+(defun subseqp(needle haystack &optional (i 0))
   (when(<=(+ i (length needle))(length haystack))
     (dotimes (j (length needle) t)
       (unless(eql(elt needle j)(elt haystack(+ i j)))
