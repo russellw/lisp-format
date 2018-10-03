@@ -13,6 +13,9 @@
 (load "read")
 (load "write")
 
+;Code transformations
+(load "comment-space")
+
 (defun canonical-option(s)
   (when(and(search"Win"(software-type))
            (subseqp"/"s ))
@@ -32,8 +35,13 @@
 
 (defun help ()
 (format t"General options:~%")
-(format t"-help     Show help~%")
-(format t"-version  Show version~%")
+(format t"-help           Show help~%")
+(format t"-version        Show version~%")
+(format t"~%")
+(format t"Code transformations:~%")
+(format t"-comment-case   ; foo -> ; Foo~%")
+(format t"-comment-space  ;foo -> ; foo~%")
+(format t"-all            All the above~%")
 )
 
 (defun version ()
@@ -44,6 +52,9 @@
   (let ((args)
         (files)
         (options t)
+              ;Code transformations
+              (comment-case )
+              (comment-space )
        )
     (setf
       args
@@ -60,11 +71,18 @@
         if (and options (subseqp"-"s ))
           do
           (cond
-            ((equal s"-h")
+          ;General options
+            ((member s '("h" "help" ) :test #'string=)
               (help))
-            ((member s '("V" "v" ) :test #'string=)
+            ((member s '("V" "v" "version") :test #'string=)
               (version))
-            (t (format t "FOO~%"))
+
+              ;Code transformations
+              ((equal s"comment-space")
+                (setf comment-space t))
+
+              ;error
+            (t (format t "~a: unknown option~%"s))
           )
         else
            collect s
