@@ -314,11 +314,6 @@
     ((eql(elt *tok* 0)(elt "#" 0))
       (let*(
               (arg(subseq *tok* 1(position-if-not #'digit-char-p *tok* :start 1)))
-              (n
-                (when
-                  (> (length arg) 0)
-                  (parse-integer arg))
-              )
               (dispatch(elt* *tok* (1+(length arg))))
            )
         (cond
