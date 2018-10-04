@@ -63,7 +63,6 @@
               (comment-space )
               (all)
        )
-      (format t"~a~%"args)
       ;options
       (setf files
       (loop while args
@@ -94,7 +93,7 @@
       )
 
       ;files
-    (dolist (file args)
+    (dolist (file files)
       (format t "~a~%" file)
       (let ((s (read-file file))
             (backup (make-pathname :defaults file :directory "/tmp/")))
