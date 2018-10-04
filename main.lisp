@@ -9,6 +9,7 @@
 (load "macros")
 
 ;modules
+(load "add-blanks")
 (load "etc")
 (load "read")
 (load "write")
@@ -108,6 +109,9 @@
               (when (or comment-space all)
                 (setf s(comment-space s)))
 
+
+
         ;TODO: on error, restore backup
+        (setf s(add-blanks s))
         (write-file file s)))
     ))
