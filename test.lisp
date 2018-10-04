@@ -171,6 +171,8 @@ do(lex)))
                ";; foo"))
 
 ;file
-(let((s(read-file"read.lisp")))
-;  (write-all s)
+(dolist(file(args))
+(let((s(read-file file)))
+  (write-all s)
+)
 )

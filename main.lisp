@@ -17,6 +17,11 @@
 (load "comment-case")
 (load "comment-space")
 
+(defun args()
+      #+ccl *unprocessed-command-line-arguments*
+      #+sbcl (cdr *posix-argv*)
+)
+
 (defun canonical-option(s)
   (when(and(search"Win"(software-type))
            (subseqp"/"s ))
@@ -50,7 +55,7 @@
 )
 
 (defun main ()
-  (let ((args)
+  (let ((args(args))
         (files)
         (options t)
               ;Code transformations
@@ -58,11 +63,6 @@
               (comment-space )
               (all)
        )
-    (setf
-      args
-      #+ccl *unprocessed-command-line-arguments*
-      #+sbcl (cdr *posix-argv*)
-      )
       (format t"~a~%"args)
       ;options
       (setf files
@@ -111,4 +111,4 @@
 
         ;TODO: on error, restore backup
         (write-file file s)))
-    (quit)))
+    ))

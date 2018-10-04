@@ -1,1 +1,1 @@
-sbcl --noinform --disable-ldb --lose-on-corruption --load main.lisp --eval (main) %*
+sbcl --noinform --disable-ldb --lose-on-corruption --non-interactive --load main.lisp --eval (main) %*
