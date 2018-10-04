@@ -170,9 +170,15 @@ do(lex)))
 (assert (equal (fmt 0 (comment-space (read-string ";; foo")))
                ";; foo"))
 
-;file
-(dolist(file(args))
-(let((s(read-file file)))
-  (write-all s)
-)
-)
+;files
+  (let (
+        (files(parse-args(args)))
+       )
+
+    (dolist (file files)
+      (format t "~a~%" file)
+      (let ((s (read-file file))
+           )
+        (setf s(transform s))
+        (write-all s))
+    ))

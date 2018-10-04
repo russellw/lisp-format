@@ -18,6 +18,10 @@
 (load "comment-case")
 (load "comment-space")
 
+;options
+(defvar *comment-case* nil)
+(defvar *comment-space* nil)
+
 (defun args()
       #+ccl *unprocessed-command-line-arguments*
       #+sbcl (cdr *posix-argv*)
@@ -55,21 +59,13 @@
 (format t"lisp-format version 0~%")
 )
 
-(defun main ()
-  (let ((args(args))
-        (files)
+(defun parse-args (args)
+  (let (
         (options t)
-              ;Code transformations
-              (comment-case )
-              (comment-space )
-              (all)
        )
       ;options
-      (setf files
       (loop while args
         for s =(canonical-option (pop args))
-        do
-      (format t"~a~%"s)
         if (and options (subseqp"-"s ))
           do
           (cond
@@ -80,10 +76,10 @@
               (version))
 
               ;Code transformations
-              ((equal s"-comment-case")
-                (setf comment-case t))
-              ((equal s"-comment-space")
-                (setf comment-space t))
+              ((or(equal s"-comment-case")(equal s"-all"))
+                (setf *comment-case* t))
+              ((or(equal s"-comment-space")(equal s"-all"))
+                (setf *comment-space* t))
 
               ;error
             (t (format t "~a: unknown option~%"s))
@@ -91,27 +87,40 @@
         else
            collect s
       )
-      )
+)
+)
 
-      ;files
-    (dolist (file files)
-      (format t "~a~%" file)
+(defun transform(s)
+              ;optional transformations
+              (when *comment-case*
+                (setf s(comment-case s)))
+              (when *comment-space*
+                (setf s(comment-space s)))
+
+
+
+        ;necessary transformations
+        (setf s(add-blanks s))
+        s
+)
+
+(defun do-file (file)
       (let ((s (read-file file))
             (backup (make-pathname :defaults file :directory "/tmp/")))
         (ignore-errors
           (delete-file backup))
         (ignore-errors
           (rename-file file backup))
+        (setf s(transform s))
+        (write-file file s))
+)
 
-              ;Code transformations
-              (when (or comment-case all)
-                (setf s(comment-case s)))
-              (when (or comment-space all)
-                (setf s(comment-space s)))
+(defun main ()
+  (let (
+        (files(parse-args(args)))
+       )
 
-
-
-        ;TODO: on error, restore backup
-        (setf s(add-blanks s))
-        (write-file file s)))
-    ))
+    (dolist (file files)
+      (format t "~a~%" file)
+      (do-file file)
+    )))
