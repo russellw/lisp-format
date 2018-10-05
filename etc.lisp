@@ -14,7 +14,7 @@
   (and
     (consp a)
     (eq(car a)+special+)
-    (eql(cadr a)"")))
+    (string=(cadr a)"")))
 
 (defun line-comment-p(a)
   (and
