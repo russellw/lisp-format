@@ -21,6 +21,7 @@
 ;options
 (defvar *comment-case* nil)
 (defvar *comment-space* nil)
+(defvar *all* nil)
 
 (defun args()
       #+ccl *unprocessed-command-line-arguments*
@@ -76,10 +77,12 @@
               (version))
 
               ;Code transformations
-              ((or(equal s"-comment-case")(equal s"-all"))
+              ((equal s"-comment-case")
                 (setf *comment-case* t))
-              ((or(equal s"-comment-space")(equal s"-all"))
+              ((equal s"-comment-space")
                 (setf *comment-space* t))
+              ((equal s"-all")
+                (setf *all* t))
 
               ;error
             (t (format t "~a: unknown option~%"s))
@@ -92,9 +95,9 @@
 
 (defun transform(s)
               ;optional transformations
-              (when *comment-case*
+              (when (or *comment-case* *all*)
                 (setf s(comment-case s)))
-              (when *comment-space*
+              (when (or *comment-space* *all*)
                 (setf s(comment-space s)))
 
 
