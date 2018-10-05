@@ -103,13 +103,14 @@
 
 
         ;necessary transformations
-        (setf s(add-blanks s))
-        s
+        (add-blanks s)
 )
 
 (defun do-file (file)
       (let ((s (read-file file))
-            (backup (make-pathname :defaults file :directory "/tmp/")))
+            (backup (make-pathname
+                      :defaults file
+                      :directory "/tmp/")))
         (ignore-errors
           (delete-file backup))
         (ignore-errors

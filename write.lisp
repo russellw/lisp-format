@@ -176,17 +176,9 @@
 )
 
 (defun fmt-special(col a)
-  (cond
-    ((member (cadr a) '("#+" "#-") :test #'string=)
-      (concatenate 'string (cadr a) (fmt-inline(caddr a)) (fmt-lines-indent-prefix (+ col 2) (cdddr a)))
-    )
-    ((=(length a)3)
-      (concatenate 'string (cadr a) (fmt (+ col (length(cadr a))) (caddr a)))
-    )
-    (t
-      (concatenate 'string (cadr a) (fmt-lines-indent-prefix (+ col 2) (cddr a)))
-    )
-  )
+  (if(cddr a)
+      (concatenate 'string (cadr a) (fmt (+ col (length(cadr a))) (caddr a)) (fmt-lines-indent-prefix (+ col 2) (cdddr a)))
+      (cadr a))
 )
 
 (defun fmt(col a)
