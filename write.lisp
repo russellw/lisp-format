@@ -103,9 +103,13 @@
 
 (defun fmt-lines-indent-prefix(col s)
   (apply #'concatenate 'string
-    (loop for a in s
+    (loop while s
+      for a =(pop s)
       collect (indent col (list a))
       collect (fmt col a)
+      if(and(keywordp a)s)
+        collect" "and
+        collect(fmt(+ col 1(length(fmt-atom a)))(pop s))
     )
   )
 )
