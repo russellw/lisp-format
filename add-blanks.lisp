@@ -41,6 +41,8 @@
 (defun add-blanks(a)
   (if(atom a)
     a
+    (progn
+      (setf a(mapcar #'add-blanks a))
     (remove-extra-blanks
     (loop
       for (b . more) on a
@@ -49,6 +51,7 @@
       collect b
       if(want-blank-after b more)
         collect(list +special+"")
+    )
     )
     )
   )
