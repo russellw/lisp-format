@@ -1,24 +1,53 @@
 
 
-(defun fmt-loop-body(col s)
-  (let((indent(indent col s)))
+(defun fmt-loop-clause-n(col s n)
+ (values
+  (let(
+            (u
+             (apply #'concatenate  'string
+              (loop for i below n
+                collect (fmt-inline(pop s))
+                collect " "
+              )
+             )
+            )
+      )
+      (concatenate 'string
+        (indent col s)
+        u
+        (fmt(+ col(length u))(pop s))
+      )
+  )
+  s
+ )
+)
+
+(defun fmt-loop-clause(col s)
+ (values
+  (let(
+            (indent(indent col s))
+            (u(when(atom(car s))(fmt-atom(car s))))
+      )
   (cond
     ((not s)
       nil)
     ((consp(car s))
-      (list*
+      (concatenate 'string
         indent
         (fmt col(pop s))
-        (fmt-loop-body col s)
       )
     )
 
     ;6.1.2.1.1 The for-as-arithmetic subclause
+    ;6.1.2.1.2 The for-as-in-list subclause
+    ;6.1.2.1.3 The for-as-on-list subclause
+    ;6.1.2.1.5 The for-as-across subclause
     ((and(member(car s)'(for as))
          (preposition(caddr s)))
-     (list*
+     (pop s)
+     (apply #'concatenate  'string
        indent
-       (fmt-atom(pop s))
+       u
        " "
        (fmt-inline(pop s))
        (loop while (preposition(car s))
@@ -27,28 +56,96 @@
             collect" "
             collect(fmt-inline(pop s))
        )
-       (fmt-loop-body col s)
+     )
+    )
+
+    ;6.1.2.1.4 The for-as-equals-then subclause
+
+    ;6.1.2.1.6 The for-as-hash subclause
+    ;6.1.2.1.7 The for-as-package subclause
+    ((and(member(car s)'(for as))
+         (eq(caddr s)'being))
+     (pop s)
+     (concatenate 'string
+       indent
+       u
+       " "
+       (fmt-inline(pop s))
+       (apply #'concatenate  'string
+         (loop while (atom(car s))
+              collect" "
+              collect(fmt-atom(pop s))
+         )
+       )
+       " "
+       (fmt-inline(pop s))
+     )
+    )
+
+    ;6.1.2.2 Local Variable Initializations
+    ((and(eq(car s)'with)
+         (eq(caddr s)'=))
+       (setf (values u s) (fmt-loop-clause-n col s 3))
+       (apply #'concatenate  'string
+        u
+        (loop while (eq(car s)'and)
+          do
+           (setf (values u s) (fmt-loop-clause-n col s 3))
+           collect u
+        )
+       )
+    )
+
+    ;6.1.5 Unconditional Execution Clauses
+    ((member(car s)'(do doing))
+     (pop s)
+     (concatenate 'string
+       indent
+       u
+     )
+    )
+
+    ;6.1.6 Conditional Execution Clauses
+    ((member(car s)'(if when unless))
+     (pop s)
+     (concatenate 'string
+       indent
+       u
+       " "
+       (fmt(+ col(length u)1)(pop s))
      )
     )
 
     ;other keyword
     (t
-      (let((k(fmt-atom(pop s))))
-        (list*
-          indent
-          k
-          " "
-          (fmt(+ col(length k)1)(pop s))
-          (fmt-loop-body col s)
-        )
+      (pop s)
+      (concatenate 'string
+        indent
+        u
+        " "
+        (fmt(+ col(length u)1)(pop s))
       )
     )
+
+    ;for item = (length stack) then (pop stack)
+    ;for i fixnum from 3
   )
   )
+  s
+ )
 )
 
 (defun preposition(a)
-(member a'(from downfrom upfrom to downto upto below above by)))
+(member a'(
+    ;6.1.2.1.1 The for-as-arithmetic subclause
+from downfrom upfrom to downto upto below above by
+    ;6.1.2.1.2 The for-as-in-list subclause
+in
+    ;6.1.2.1.3 The for-as-on-list subclause
+on
+;6.1.2.1.5 The for-as-across subclause
+across
+)))
 
 (defun fmt-loop(col a)
   (destructuring-bind (op &rest body) a
@@ -56,7 +153,13 @@
     (format nil "(~a~a)"
       op
       (apply #'concatenate 'string
-        (flatten(fmt-loop-body(1+ col)body))
+        (let((u))
+          (loop while body
+            do
+            (setf(values u body)(fmt-loop-clause (1+ col) body))
+            collect u
+          )
+        )
       )
     )
   )
