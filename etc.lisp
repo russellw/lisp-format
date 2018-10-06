@@ -21,3 +21,14 @@
     (consp a)
     (eq(car a)+special+)
     (eql(elt(cadr a)0)#.(elt";"0))))
+
+(defun flatten (s)
+  (cond
+    ((not s)
+      nil)
+    ((atom s)
+      (list s))
+    (t
+      (loop
+        for a in s
+        append (flatten a)))))

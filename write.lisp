@@ -1,29 +1,54 @@
 
 
 (defun fmt-loop-body(col s)
+  (let((indent(indent col s)))
   (cond
     ((not s)
       nil)
     ((consp(car s))
       (list*
-        (indent col s)
-        (fmt col(car s))
-        (fmt-loop-body col(cdr s))
+        indent
+        (fmt col(pop s))
+        (fmt-loop-body col s)
       )
     )
+
+    ;6.1.2.1.1 The for-as-arithmetic subclause
+    ((and(member(car s)'(for as))
+         (preposition(caddr s)))
+     (list*
+       indent
+       (fmt-atom(pop s))
+       " "
+       (fmt-inline(pop s))
+       (loop while (preposition(car s))
+            collect" "
+            collect(fmt-atom(pop s))
+            collect" "
+            collect(fmt-inline(pop s))
+       )
+       (fmt-loop-body col s)
+     )
+    )
+
+    ;other keyword
     (t
-      (let((k(fmt-inline(car s))))
+      (let((k(fmt-atom(pop s))))
         (list*
-          (indent col s)
+          indent
           k
           " "
-          (fmt(+ col(length k)1)(cadr s))
-          (fmt-loop-body col(cddr s))
+          (fmt(+ col(length k)1)(pop s))
+          (fmt-loop-body col s)
         )
       )
     )
   )
+  )
 )
+
+(defun preposition(a)
+(member a'(from downfrom upfrom to downto upto below above by)))
 
 (defun fmt-loop(col a)
   (destructuring-bind (op &rest body) a
@@ -31,7 +56,7 @@
     (format nil "(~a~a)"
       op
       (apply #'concatenate 'string
-        (fmt-loop-body(1+ col)body)
+        (flatten(fmt-loop-body(1+ col)body))
       )
     )
   )
