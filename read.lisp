@@ -241,18 +241,11 @@
      (err "unexpected end of file"))
 
     ; Left-Parenthesis
-    ((equal *tok* "(" )
-      (lex)
-      (prog1
-      (loop
-        until(equal *tok*")")
-        collect(read*)
-      )
-      (lex)
-      )
-    )
+    ((equal *tok* "(")
+     (lex)
+     (prog1 (loop until (equal *tok* ")") collect (read*)) (lex)))
 
-    ;dot
+    ; Dot
     ((equal *tok* ".")
      (prog1 (list +special+ *tok*) (lex)))
 
