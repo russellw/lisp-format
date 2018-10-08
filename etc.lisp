@@ -33,7 +33,13 @@
         for a in s
         append (flatten a)))))
 
-(defun write-file (file s)
+(defun write-text-file (file s)
   (with-open-file (*standard-output* file :direction :output :if-exists
                    :supersede :if-does-not-exist :create)
           (princ s)))
+
+(defun read-text-file (file)
+  (with-open-file (st file)
+    (let ((s (make-string (file-length st))))
+      (read-sequence s st)
+      s)))

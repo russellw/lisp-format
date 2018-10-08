@@ -106,15 +106,18 @@
         (add-blanks s)
 )
 (defun do-file (file)
-      (let ((s(fmt-all(transform (read-file file))))
+      (let ((new-text(fmt-all(transform (read-file file))))
+            (old-text(read-text-file file))
             (backup (make-pathname
                       :defaults file
                       :directory "/tmp/")))
+        (unless(string= old-text new-text)
+      (format t "~a~%" file)
         (ignore-errors
           (delete-file backup))
         (ignore-errors
           (rename-file file backup))
-        (write-file file s))
+        (write-text-file file new-text)))
 )
 
 (defun main ()
@@ -123,6 +126,7 @@
        )
 
     (dolist (file files)
-      (format t "~a~%" file)
       (do-file file)
-    )))
+    )
+  )
+)
