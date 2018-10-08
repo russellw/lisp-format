@@ -3,7 +3,7 @@
 
 ;globals
 (defconstant +special+ (gensym))
-(defvar *right-margin* 40)
+(defvar *right-margin* 80)
 
 ;macros
 (load "macros")
