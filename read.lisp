@@ -242,8 +242,20 @@
 
     ; Left-Parenthesis
     ((equal *tok* "(")
-     (lex)
-     (prog1 (loop until (equal *tok* ")") collect (read*)) (lex)))
+      (lex)
+      (let((s
+              (loop
+                until (member *tok* '(")" "."):test #'string=)
+                collect (read*)
+              )))
+            (when(equal *tok* ".")
+                (lex)
+                (setf s(append s(read*)))
+            )
+            (lex)
+            s
+      )
+     )
 
     ; Right-Parenthesis
     ((equal *tok* ")")
