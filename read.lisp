@@ -241,21 +241,20 @@
      (err "unexpected end of file"))
 
     ; Left-Parenthesis
-    ((equal *tok* "(")
+    ((equal *tok* "(" )
       (lex)
-      (let((s
-              (loop
-                until (member *tok* '(")" "."):test #'string=)
-                collect (read*)
-              )))
-            (when(equal *tok* ".")
-                (lex)
-                (setf s(append s(read*)))
-            )
-            (lex)
-            s
+      (prog1
+      (loop
+        until(equal *tok*")")
+        collect(read*)
       )
-     )
+      (lex)
+      )
+    )
+
+    ;dot
+    ((equal *tok* ".")
+     (prog1 (list +special+ *tok*) (lex)))
 
     ; Right-Parenthesis
     ((equal *tok* ")")
