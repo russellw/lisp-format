@@ -119,11 +119,17 @@
     ;other keyword
     (t
       (pop s)
+      (if s
       (concatenate 'string
         indent
         u
         " "
         (fmt(+ col(length u)1)(pop s))
+      )
+      (concatenate 'string
+        indent
+        u
+      )
       )
     )
 
