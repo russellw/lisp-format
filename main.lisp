@@ -12,7 +12,7 @@
 (load "add-blanks")
 (load "etc")
 (load "read")
-(load "write")
+(load "fmt")
 
 ;Code transformations
 (load "comment-case")
@@ -107,7 +107,7 @@
 )
 
 (defun do-file (file)
-      (let ((s (read-file file))
+      (let ((s(fmt-all(transform (read-file file))))
             (backup (make-pathname
                       :defaults file
                       :directory "/tmp/")))
@@ -115,7 +115,6 @@
           (delete-file backup))
         (ignore-errors
           (rename-file file backup))
-        (setf s(transform s))
         (write-file file s))
 )
 

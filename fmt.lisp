@@ -345,13 +345,6 @@ across
   )
 )
 
-(defun write-all (s)
-    (dolist (a s)
-      (format t "~a~%" (fmt 0 a))
-    )
-)
-
-(defun write-file (file s)
-  (with-open-file (*standard-output* file :direction :output :if-exists
-                   :supersede)
-          (write-all s)))
+(defun fmt-all (s)
+  (format nil "~a~%"
+    (fmt-lines-indent-separator s)))

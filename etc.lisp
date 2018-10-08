@@ -32,3 +32,8 @@
       (loop
         for a in s
         append (flatten a)))))
+
+(defun write-file (file s)
+  (with-open-file (*standard-output* file :direction :output :if-exists
+                   :supersede :if-does-not-exist :create)
+          (princ s)))
