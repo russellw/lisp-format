@@ -105,7 +105,6 @@
         ;necessary transformations
         (add-blanks s)
 )
-
 (defun do-file (file)
       (let ((s(fmt-all(transform (read-file file))))
             (backup (make-pathname

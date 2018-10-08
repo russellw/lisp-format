@@ -347,4 +347,4 @@ across
 
 (defun fmt-all (s)
   (format nil "~a~%"
-    (fmt-lines-indent-separator s)))
+    (fmt-lines-indent-separator 0 s)))
