@@ -10,8 +10,4 @@
 
 (defmacro pr (a)
   (let ((name (gensym)))
-    `(let ((,name ,a))
-       (format t "~s = ~s~%"
-         ',a
-         ,name)
-       ,name)))
+    `(let ((,name ,a)) (format t "~s = ~s~%" ',a ,name) ,name)))
