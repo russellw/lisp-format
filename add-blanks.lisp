@@ -45,6 +45,10 @@
          if (and (not (line-comment-p a)) (line-comment-p b))
          collect (list +special+ "")
 
+         ; Blank after last line comment
+         if (and (line-comment-p a) (not more))
+         collect (list +special+ "")
+
          ; Blank around big top-level definition
          if (and (consp a) (member (car a) ' (defmacro defun)))
          collect (list +special+ ""))))))
