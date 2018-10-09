@@ -137,7 +137,7 @@
     'string
     (list (read-char))
     (loop
-     with c = (read-char)
+     for c = (read-char)
      collect c
      until (and (eql c (elt "|" 0)) (eql (peek-char) (elt "#" 0)))
      if (and (eql c (elt "#" 0)) (eql (peek-char) (elt "|" 0)))
