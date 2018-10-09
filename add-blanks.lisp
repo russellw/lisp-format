@@ -1,39 +1,46 @@
-(defun want-blank-before (a)
-  (cond
-    ((atom a)
-     nil)
-    ((member (car a) ' (defmacro defun)))
-    ((and (line-comment-p a) (subseqp ";" (cadr a))))))
-
-(defun want-blank-after (a more)
-  (cond
-    ((atom a)
-     nil)
-    ((member (car a) ' (defmacro defun)))
-    ((and (line-comment-p a) (not more)))))
 
 (defun remove-extra-blanks (s)
+  ;remove leading blanks
   (loop
    while (blankp (car s))
    do
    (pop s))
+   ;remove consecutive blanks
+  (setf s
   (loop
    for (a . more) on s
    when (not (blankp a))
    collect a
-   when (and (blankp a) more (not (blankp (car more))))
-   collect a))
+   when (and (blankp a) (not (blankp (car more))))
+   collect a)
+   )
+  ;remove trailing blanks, except after line comments
+  (setf  s(reverse s))
+  (loop
+   while(and (blankp (car s))(not(line-comment-p(cadr s))))
+   do
+   (pop s))
+  )
+  (reverse s)
+   )
 
 (defun add-blanks (a)
   (if (atom a)
     a
-    (progn
-      (setf a (mapcar #'add-blanks a))
+    (let(( s (mapcar #'add-blanks a)))
       (remove-extra-blanks
         (loop
-         for (b . more) on a
-         if (want-blank-before b)
-         collect (list +special+ "")
-         collect b
-         if (want-blank-after b more)
-         collect (list +special+ ""))))))
+         for (a . more) on s
+         with  b = (car more)
+
+         if (and(consp a)(member (car a) ' (defmacro defun)))
+          collect (list +special+ "")
+
+         collect a
+
+         if(and(not(line-comment-p a))(line-comment-p b))
+          collect (list +special+ "")
+         if (and(consp a)(member (car a) ' (defmacro defun)))
+          collect (list +special+ "")
+
+         )))))
