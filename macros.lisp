@@ -6,7 +6,8 @@
          (if ,name
            (let ((it ,name))
              ,@(cdr clause))
-           (acond ,@(cdr clauses)))))))
+           (acond
+             ,@(cdr clauses)))))))
 
 (defmacro pr (a)
   (let ((name (gensym)))

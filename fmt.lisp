@@ -288,7 +288,7 @@
      (fmt-atom a))
 
     ; Known forms
-    ((eq (car a) 'cond)
+    ((member (car a) '(acond cond))
      (fmt-cond col a))
     ((member (car a) ' (defmacro defun))
      (fmt-defun col a))

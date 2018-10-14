@@ -137,7 +137,8 @@
     'string
     (list (read-char))
     (loop
-     for c = (read-char)
+     for c
+     = (read-char)
      collect c
      until (and (eql c (elt "|" 0)) (eql (peek-char) (elt "#" 0)))
      if (and (eql c (elt "#" 0)) (eql (peek-char) (elt "|" 0)))
@@ -186,7 +187,6 @@
          ","))
 
       ; Sharpsign
-
       ; http://www.lispworks.com/documentation/lw50/CLHS/Body/02_dh.htm
       ((eql (peek-char) (elt "#" 0))
        (read-char)
@@ -266,7 +266,6 @@
      (prog1 (read-from-string *tok*) (lex)))
 
     ; Sharpsign
-
     ; http://www.lispworks.com/documentation/lw50/CLHS/Body/02_dh.htm
     ((eql (elt *tok* 0) (elt "#" 0))
      (let* ((arg
@@ -275,7 +274,6 @@
        (cond
 
          ; Sharpsign Backslash, character
-
          ; http://www.lispworks.com/documentation/lw50/CLHS/Body/13_ag.htm
          ((eql dispatch (elt "\\" 0))
           (prog1
@@ -323,7 +321,6 @@
           (list +special+ (prog1 *tok* (lex)) (read*))))))
 
     ; Number or symbol
-
     ; http://www.lispworks.com/documentation/lw50/CLHS/Body/02_c.htm
     (t
      (prog1

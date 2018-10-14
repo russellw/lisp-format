@@ -1,5 +1,4 @@
 (load "main")
-
 (let ((files (parse-args (args))))
   (dolist (file files)
     (format t "~a~%"
