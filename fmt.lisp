@@ -296,7 +296,7 @@
      (fmt-let col a))
     ((eq (car a) 'loop)
      (fmt-loop col a))
-    ((member (car a) '(dolist dotimes with-open-file when unless if))
+    ((member (car a) '(dolist dotimes with-open-file when unless if lambda))
      (fmt1 col a))
     ((member (car a) '(format))
      (fmt2 col a))
