@@ -52,13 +52,6 @@
            u
            " "
            (fmt-inline (pop s))
-           (apply
-             #'concatenate
-             'string
-             (loop
-              while (atom (car s))
-              collect " "
-              collect (fmt-atom (pop s))))
            " "
            (fmt-inline (pop s))))
 
