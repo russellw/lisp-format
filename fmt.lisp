@@ -296,6 +296,8 @@
      (fmt-let col a))
     ((eq (car a) 'loop)
      (fmt-loop col a))
+
+    ; Known forms, grouped
     ((member (car a) '(dolist dotimes with-open-file when unless if lambda))
      (fmt1 col a))
     ((member (car a) '(format))
