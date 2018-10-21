@@ -161,6 +161,16 @@
       op
       (fmt-clauses (+ col 2) clauses))))
 
+(defun fmt-case (col a)
+  (destructuring-bind
+    (op key &rest clauses)
+    a
+    (setf op (fmt-inline op))
+    (format nil "(~a ~a~a)"
+      op
+      (fmt-inline key)
+      (fmt-clauses (+ col 2) clauses))))
+
 (defun fmt-atom (a)
   (if (characterp a)
     (format nil "#\\~:c"
@@ -288,6 +298,8 @@
      (fmt-atom a))
 
     ; Known forms
+    ((member (car a) '(case))
+     (fmt-case col a))
     ((member (car a) '(acond cond))
      (fmt-cond col a))
     ((member (car a) ' (defmacro defun))
